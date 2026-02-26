@@ -18,6 +18,7 @@ retrofit = "2.11.0"
 okhttp = "4.12.0"
 datastorePreferences = "1.1.2"
 coil = "2.7.0"
+coreKtxVersion = "1.17.0"
 
 [libraries]
 # Core
@@ -66,6 +67,7 @@ coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coi
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtxVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

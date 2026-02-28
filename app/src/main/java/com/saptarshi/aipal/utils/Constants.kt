@@ -1,4 +1,4 @@
-package com.example.youraifrnd.utils
+package com.saptarshi.aipal.utils
 
 object Constants {
     const val BASE_URL = "https://ai-toolkit-9ycz.onrender.com/"

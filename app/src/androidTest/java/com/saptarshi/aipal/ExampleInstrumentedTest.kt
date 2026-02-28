@@ -1,4 +1,4 @@
-package com.example.youraifrnd
+package com.saptarshi.aipal
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

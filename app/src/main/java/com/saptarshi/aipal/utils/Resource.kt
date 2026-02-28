@@ -1,4 +1,4 @@
-package com.example.youraifrnd.utils
+package com.saptarshi.aipal.utils
 
 sealed class Resource<T>(val data: T? = null, val message: String? = null) {
     object Loading : Resource<Nothing>()

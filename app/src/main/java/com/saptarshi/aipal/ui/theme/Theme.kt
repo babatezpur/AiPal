@@ -1,6 +1,5 @@
-package com.example.youraifrnd.ui.theme
+package com.saptarshi.aipal.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme

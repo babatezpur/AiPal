@@ -1,4 +1,4 @@
-package com.example.youraifrnd
+package com.saptarshi.aipal
 
 import org.junit.Test
 

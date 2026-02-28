@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.youraifrnd'
+    namespace 'com.saptarshi.aipal'
     compileSdk 35
 
     defaultConfig {
-        applicationId "com.example.youraifrnd"
+        applicationId "com.saptarshi.aipal"
         minSdk 24
         targetSdk 35
         versionCode 1

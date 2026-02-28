@@ -1,4 +1,4 @@
-package com.example.youraifrnd.ui.theme
+package com.saptarshi.aipal.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

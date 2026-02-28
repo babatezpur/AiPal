@@ -1,4 +1,4 @@
-package com.example.youraifrnd
+package com.saptarshi.aipal
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -23,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
-import com.example.youraifrnd.ui.theme.YourAIFrndTheme
+import com.saptarshi.aipal.ui.theme.YourAIFrndTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

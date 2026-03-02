@@ -10,17 +10,20 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface SavedItemDao {
 
-    @Query("SELECT * FROM saved_items ORDER BY saved_at DESC LIMIT 10")
-    fun getRecentSavedItems(): Flow<List<SavedItemEntity>>
+    @Query("SELECT * FROM saved_items ORDER BY saved_at DESC")
+    fun getAllSavedItems(): Flow<List<SavedItemEntity>>
 
-    @Query("DELETE FROM saved_items WHERE id = :itemId")
-    suspend fun deleteSavedItem(itemId: Int)
+    @Query("SELECT * FROM saved_items WHERE category = :category ORDER BY saved_at DESC")
+    fun getSavedItemsByCategory(category: String): Flow<List<SavedItemEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSavedItem(item: SavedItemEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSavedItems(items: List<SavedItemEntity>)
+
+    @Query("DELETE FROM saved_items WHERE id = :itemId")
+    suspend fun deleteSavedItem(itemId: Int)
 
     @Query("DELETE FROM saved_items")
     suspend fun deleteAllSavedItems()

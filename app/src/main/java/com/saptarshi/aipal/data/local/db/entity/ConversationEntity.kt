@@ -12,5 +12,5 @@ data class ConversationEntity(
     @ColumnInfo(name = "message_count")
     val messageCount: Int,
     @ColumnInfo(name = "created_at")
-    val createdAt: String
+    val createdAt: Long
 )

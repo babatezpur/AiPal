@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class ConversationStartResponse(
     @SerializedName("conversation_id")
-    val conversationId: String,
+    val conversationId: Int,
     val message: String
 )
 

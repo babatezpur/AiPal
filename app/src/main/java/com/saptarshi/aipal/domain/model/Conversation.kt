@@ -1,7 +1,8 @@
 package com.saptarshi.aipal.domain.model
 
 data class Conversation(
-    val id: String,
+    val id: Int,
     val title: String,
     val createdAt: Long,
+    val messageCount: Int,
 )

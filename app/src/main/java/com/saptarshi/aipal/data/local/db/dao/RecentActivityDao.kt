@@ -15,7 +15,7 @@ interface RecentActivityDao {
     @Insert
     suspend fun insertRecentActivity(activity: RecentActivityEntity)
 
-    @Query("DELETE FROM recent_activities WHERE id not in (SELECT id FROM recent_activities ORDER BY timestamp DESC LIMIT 20)")
+    @Query("DELETE FROM recent_activities WHERE id not in (SELECT id FROM recent_activities ORDER BY timestamp DESC LIMIT 30)")
     suspend fun deleteOldRecentActivities()
 
 

@@ -1,0 +1,131 @@
+package com.saptarshi.aipal.ui.navigation
+
+import android.net.Uri
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import com.saptarshi.aipal.ui.theme.AiPalTheme
+
+
+enum class BottomNavTab(
+    val route : String,
+    val label : String,
+    val icon : ImageVector,
+) {
+    HOME("home", "Home", Icons.Default.Home),
+    CHATS("chat_list", "Chats", Icons.Default.Email),
+    PROFILE("profile", "Profile", Icons.Default.Person)
+}
+
+@Composable
+fun MainScreen() {
+
+    val navController = rememberNavController()
+
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
+    Scaffold(
+        bottomBar = {
+            NavigationBar() {
+                BottomNavTab.entries.forEach { tab ->
+                    NavigationBarItem(
+                        selected = currentRoute == tab.route,
+                        onClick = {
+                            navController.navigate(tab.route) {
+                                popUpTo(navController.graph.startDestinationId) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                // Restore previously saved state when re-selecting a tab
+                                restoreState = true
+                            }
+                        },
+                        icon = { Icon(tab.icon, contentDescription = tab.label) },
+                        label = { Text(tab.label) }
+                    )
+
+                }
+
+            }
+        }
+    ) { innerPadding ->
+
+        NavHost(
+            navController = navController,
+            startDestination = BottomNavTab.HOME.route,
+            modifier = Modifier.padding(innerPadding)
+        ) {
+
+            // ---- Home Tab ----
+            composable(BottomNavTab.HOME.route) {
+                PlaceholderScreen("Home")
+            }
+
+            // Search screen for facts/quotes (launched from Home's FAB)
+            // topic and category are optional — empty when from FAB, pre-filled when from recent activity
+            composable("search?topic={topic}&category={category}") {
+                PlaceholderScreen("Search")
+            }
+
+            // ---- Chats Tab ----
+            composable(BottomNavTab.CHATS.route) {
+                PlaceholderScreen("Chats")
+            }
+
+            // Individual chat screen (launched by tapping a conversation or FAB)
+            composable("chat/{conversationId}") {
+                PlaceholderScreen("Chat Detail")
+            }
+
+            // ---- Profile Tab ----
+            composable(BottomNavTab.PROFILE.route) {
+                PlaceholderScreen("Profile")
+            }
+
+            // Favourites screen (launched from Profile)
+            composable("favourites") {
+                PlaceholderScreen("Favourites")
+            }
+        }
+
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MainScreenPreview() {
+    AiPalTheme {
+        MainScreen()
+    }
+}
+
+// Temporary placeholder screen — will be replaced with actual screens later.
+@Composable
+fun PlaceholderScreen(name: String) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(text = name)
+    }
+}

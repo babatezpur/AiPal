@@ -24,7 +24,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import com.saptarshi.aipal.ui.navigation.AppNavGraph
-import com.saptarshi.aipal.ui.theme.YourAIFrndTheme
+import com.saptarshi.aipal.ui.theme.AiPalTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            YourAIFrndTheme {
+            AiPalTheme {
                 AppNavGraph()
             }
         }

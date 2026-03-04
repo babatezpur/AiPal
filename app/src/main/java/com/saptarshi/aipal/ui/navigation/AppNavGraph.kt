@@ -1,32 +1,53 @@
 package com.saptarshi.aipal.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import com.saptarshi.aipal.ui.auth.AuthScreen
+import com.saptarshi.aipal.ui.auth.AuthViewModel
 
 
 @Composable
 fun AppNavGraph() {
-
     val navController = rememberNavController()
 
-    // TODO: Once AuthViewModel is built, we'll check JWT here:
+    val authViewModel : AuthViewModel = hiltViewModel()
+    val token by authViewModel.tokenState.collectAsState(null)
+    val startDestination = if(token != null) "main" else "auth"
 
-    // val authViewModel : AuthViewModel = hiltViewModel()
-    // val token = authViewModel.tokenState.collectAsState()
-    // val startDestination = if(token != null) 'home' else 'login'
+
+    var hasCheckedToken by rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(token) {
+        if (!hasCheckedToken) {
+            hasCheckedToken = true
+        }
+    }
+
+    if (!hasCheckedToken) return  // blank screen while loading
 
     NavHost(
         navController = navController,
-        startDestination = "main",
+        startDestination = startDestination,
     ) {
         // Auth screens — will be added in the next step
-        navigation(startDestination = "login", route = "auth") {
-            composable("login") { /* LoginScreen */ }
-            composable("signup") { /* SignupScreen */ }
+        composable("auth") {
+            AuthScreen(
+                {
+                    navController.navigate("main") {
+                        popUpTo("auth") { inclusive = true }
+                    }
+                }
+            )
         }
 
         // Main screen with bottom navigation

@@ -49,7 +49,7 @@ fun AuthScreen(
     viewModel: AuthViewModel = hiltViewModel(),
 ) {
 
-    var isSignupMode by rememberSaveable { mutableStateOf(true) }
+    var isSignupMode by rememberSaveable { mutableStateOf(false) }
 
     val loginState by viewModel.loginState.collectAsState()
     val signupState by viewModel.signupState.collectAsState()
@@ -72,7 +72,7 @@ fun AuthScreen(
         onLoginClick = { email, password ->
             viewModel.login(email, password)
         },
-        onSignupClick = { email, username, password ->
+        onSignupClick = { username, email, password ->
             viewModel.register(username, email, password)
         },
         isLoading = currentState is Resource.Loading,
@@ -175,7 +175,7 @@ fun AuthScreenContent(
             OutlinedButton(
                 onClick = {
                     if (isSignupMode) {
-                        onSignupClick(email, userName, password)
+                        onSignupClick(userName, email, password)
                     } else {
                         onLoginClick(email, password)
                     }
@@ -208,7 +208,7 @@ fun AuthScreenContent(
                 modifier = Modifier
                     .padding(top = 16.dp)
                     .clickable { onSignupModeToggle() },
-                color = Color.Blue
+                color = MaterialTheme.colorScheme.primary
             )
 
             if (errorMessage != null) {

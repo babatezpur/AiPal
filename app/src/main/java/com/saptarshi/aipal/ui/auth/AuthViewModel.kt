@@ -5,12 +5,14 @@ import androidx.lifecycle.viewModelScope
 import com.saptarshi.aipal.data.repository.AuthRepository
 import com.saptarshi.aipal.domain.model.User
 import com.saptarshi.aipal.utils.Resource
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class AuthViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : ViewModel() {

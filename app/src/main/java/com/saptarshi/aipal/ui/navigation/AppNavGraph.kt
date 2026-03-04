@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import com.saptarshi.aipal.ui.auth.AuthScreen
 
 
 @Composable
@@ -21,12 +22,17 @@ fun AppNavGraph() {
 
     NavHost(
         navController = navController,
-        startDestination = "main",
+        startDestination = "auth",
     ) {
         // Auth screens — will be added in the next step
-        navigation(startDestination = "login", route = "auth") {
-            composable("login") { /* LoginScreen */ }
-            composable("signup") { /* SignupScreen */ }
+        composable("auth") {
+            AuthScreen(
+                {
+                    navController.navigate("main") {
+                        popUpTo("auth") { inclusive = true }
+                    }
+                }
+            )
         }
 
         // Main screen with bottom navigation

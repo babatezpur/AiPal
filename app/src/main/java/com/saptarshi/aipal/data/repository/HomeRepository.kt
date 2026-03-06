@@ -10,7 +10,7 @@ import javax.inject.Singleton
 class HomeRepository @Inject constructor(
     private val recentActivityDao: RecentActivityDao
 ) {
-    fun getRecentActivity() = recentActivityDao.getRecentActivities().map { entities ->
+    fun getRecentActivities() = recentActivityDao.getRecentActivities().map { entities ->
         entities.map { RecentActivity(it.id, it.topic, it.category, it.timestamp) }
     }
 

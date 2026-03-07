@@ -75,7 +75,10 @@ fun RecentActivityTile(factOrQuote: RecentActivity = RecentActivity(
         ),
         modifier = Modifier
             .fillMaxWidth()
-            .height(100.dp)
+            .height(100.dp),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 10.dp
+        )
 
     ) {
         Row(

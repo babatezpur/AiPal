@@ -23,6 +23,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.saptarshi.aipal.ui.home.HomeScreen
 import com.saptarshi.aipal.ui.theme.AiPalTheme
 
 
@@ -78,7 +79,7 @@ fun MainScreen() {
 
             // ---- Home Tab ----
             composable(BottomNavTab.HOME.route) {
-                PlaceholderScreen("Home")
+                HomeScreen(navController)
             }
 
             // Search screen for facts/quotes (launched from Home's FAB)

@@ -1,6 +1,8 @@
 package com.saptarshi.aipal.ui.navigation
 
 import android.net.Uri
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -23,7 +25,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.saptarshi.aipal.ui.home.HomeScreen
+import com.saptarshi.aipal.ui.home.SearchScreen
 import com.saptarshi.aipal.ui.theme.AiPalTheme
 
 
@@ -37,6 +41,7 @@ enum class BottomNavTab(
     PROFILE("profile", "Profile", Icons.Default.Person)
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainScreen() {
 
@@ -84,8 +89,16 @@ fun MainScreen() {
 
             // Search screen for facts/quotes (launched from Home's FAB)
             // topic and category are optional — empty when from FAB, pre-filled when from recent activity
-            composable("search?topic={topic}&category={category}") {
-                PlaceholderScreen("Search")
+            composable(
+                route = "search?topic={topic}&category={category}",
+                arguments = listOf(
+                    navArgument("topic") { defaultValue = "" },
+                    navArgument("category") { defaultValue = "" }
+                )
+            ) {
+                val topic = it.arguments?.getString("topic") ?: ""
+                val category = it.arguments?.getString("category") ?: ""
+                SearchScreen(topic = topic, category = category)
             }
 
             // ---- Chats Tab ----

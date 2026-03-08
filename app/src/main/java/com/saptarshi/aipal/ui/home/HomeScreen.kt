@@ -115,12 +115,12 @@ fun HomeScreenContent(
 
 
                 if(recentActivities.isNotEmpty())
-                Text(
-                    text = "RECENTS",
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier
-                        .padding(bottom = 5.dp)
-                )
+                    Text(
+                        text = "RECENTS",
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier
+                            .padding(bottom = 5.dp)
+                    )
                 recentActivities.forEach {
                     RecentActivityTile(it)
                 }

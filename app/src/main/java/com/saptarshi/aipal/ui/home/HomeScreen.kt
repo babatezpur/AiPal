@@ -29,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -88,13 +89,32 @@ fun HomeScreenContent(
         )
 
         Box(modifier = Modifier.weight(1f)) {
-            Column(
+
+            if (recentActivities.isEmpty()) {
+                // Show inside the LazyColumn or as a Box
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center,
+
+                    ) {
+                    Text(
+                        text = "No recent activity yet.\nTap + to search for facts or quotes!",
+                        style = MaterialTheme.typography.bodyLarge,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+            else Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
                     .padding(top = 10.dp, start = 10.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
+
+
+                if(recentActivities.isNotEmpty())
                 Text(
                     text = "RECENTS",
                     style = MaterialTheme.typography.titleMedium,
@@ -107,7 +127,7 @@ fun HomeScreenContent(
             }
 
             FloatingActionButton(
-                onClick = { },
+                onClick = { onFabClick() },
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(25.dp)

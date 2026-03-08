@@ -3,11 +3,13 @@ package com.saptarshi.aipal.ui.home
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.ui.Alignment
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -42,77 +44,76 @@ fun HomeScreen (
     navController: NavController,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-    HomeScreenContent(viewModel)
+    val recentActivities by viewModel.recentActivities.collectAsState()
+
+    HomeScreenContent(
+        recentActivities,
+        onActivityCLick = { activity ->
+            navController.navigate("search?topic=${activity.topic}&category=${activity.category}")
+        },
+        onFabClick = {
+            navController.navigate("search")
+        }
+    )
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreenContent(viewModel: HomeViewModel) {
-
-    val recentActivities by viewModel.recentActivities.collectAsState()
-    val listItems = mutableListOf<RecentActivity>(
-        RecentActivity(1, "Topic 1", FeatureCategory.FACT, 1234567890),
-        RecentActivity(2, "Topic 2", FeatureCategory.QUOTE, 1234567890),
-        RecentActivity(3, "Topic 3", FeatureCategory.FACT, 1234567890),
-
-        RecentActivity(4, "Topic 4", FeatureCategory.QUOTE, 1234567890),
-        RecentActivity(5, "Topic 5", FeatureCategory.FACT, 1234567890),
-        RecentActivity(6, "Topic 6", FeatureCategory.QUOTE, 1234567890),
-        RecentActivity(7, "Topic 7", FeatureCategory.QUOTE, 1234567890),
-        RecentActivity(8, "Topic 8", FeatureCategory.FACT, 1234567890),
-        RecentActivity(9, "Topic 9", FeatureCategory.QUOTE, 1234567890),
-    )
+fun HomeScreenContent(
+    recentActivities : List<RecentActivity>,
+    onActivityCLick : (RecentActivity) -> Unit,
+    onFabClick : () -> Unit
+) {
 
 
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary
-                ),
-                title = {
-                    Text("Home")
-                },
-                actions = {
-                    IconButton(onClick = { /* do something */ }) {
-                        Icon(
-                            imageVector = Icons.Filled.Menu,
-                            contentDescription = "Localized description"
-                        )
-                    }
-                },
-            )
-        },
-        floatingActionButton = {
-            FloatingActionButton(onClick = { }) {
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        CenterAlignedTopAppBar(
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                titleContentColor = MaterialTheme.colorScheme.onPrimary
+            ),
+            title = {
+                Text("Home")
+            },
+            actions = {
+                IconButton(onClick = { /* do something */ }) {
+                    Icon(
+                        imageVector = Icons.Filled.Menu,
+                        contentDescription = "Localized description"
+                    )
+                }
+            },
+        )
+
+        Box(modifier = Modifier.weight(1f)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(top = 10.dp, start = 10.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Text(
+                    text = "RECENTS",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier
+                        .padding(bottom = 5.dp)
+                )
+                recentActivities.forEach {
+                    RecentActivityTile(it)
+                }
+            }
+
+            FloatingActionButton(
+                onClick = { },
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(25.dp)
+            ) {
                 Icon(Icons.Filled.Add, "Floating action button.")
             }
         }
-
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(innerPadding)
-                .padding(top=10.dp, start=10.dp),
-            // provide some gap between each element
-            verticalArrangement = Arrangement.spacedBy(10.dp)
-
-        ) {
-            Text(
-                text = "RECENTS",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier
-                    .padding(bottom = 5.dp)
-
-            )
-            listItems.forEach {
-                RecentActivityTile(it)
-            }
-        }
-
     }
 }

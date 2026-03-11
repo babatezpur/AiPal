@@ -1,5 +1,6 @@
 package com.saptarshi.aipal.ui.home
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,6 +36,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.saptarshi.aipal.domain.model.FeatureCategory
 import com.saptarshi.aipal.domain.model.SearchResult
 import com.saptarshi.aipal.ui.components.ResultCard
@@ -44,18 +46,12 @@ import com.saptarshi.aipal.utils.Resource
 fun SearchScreen(
     topic: String = "",
     category: String = "",
-    onBackClick: () -> Unit = {},
+    navController: NavController,
     viewModel: SearchViewModel = hiltViewModel()
 ) {
     val searchState by viewModel.searchState.collectAsState()
     val selectedCategory by viewModel.selectedCategory.collectAsState()
     val savedIndices by viewModel.savedIndices.collectAsState()
-
-    // Pre-fill category from navigation argument
-    if (category.isNotEmpty()) {
-        val preselected = if (category == "FACT") FeatureCategory.FACT else FeatureCategory.QUOTE
-        viewModel.toggleCategory(preselected)
-    }
 
     SearchScreenContent(
         initialTopic = topic,
@@ -65,7 +61,7 @@ fun SearchScreen(
         onCategoryToggle = { viewModel.toggleCategory(it) },
         onSearch = { searchTopic, comment -> viewModel.search(searchTopic, comment) },
         onSaveClick = { result, index -> viewModel.saveFavourite(result, index) },
-        onBackClick = onBackClick
+        onBackClick = { navController.popBackStack() }
     )
 }
 
@@ -83,6 +79,12 @@ fun SearchScreenContent(
 ) {
     var topic by rememberSaveable { mutableStateOf(initialTopic) }
     var comment by rememberSaveable { mutableStateOf("") }
+
+    Log.d("SearchScreenContent", "SearchState: $searchState")
+    Log.d("SearchScreenContent", "topic: $topic")
+    Log.d("SearchScreenContent", "category: $selectedCategory")
+
+
 
     Column(modifier = Modifier.fillMaxSize()) {
 

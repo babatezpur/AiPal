@@ -1,5 +1,6 @@
 package com.saptarshi.aipal.ui.home
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.saptarshi.aipal.data.repository.FactRepository
@@ -17,13 +18,18 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val factsRepository: FactRepository,
     private val quotesRepository: QuoteRepository,
     private val favouritesRepository: FavouritesRepository
 ) : ViewModel() {
 
-    // Which mode is selected — facts or quotes
-    private val _selectedCategory = MutableStateFlow(FeatureCategory.FACT)
+    // Which mode is selected — facts or quotes (pre-filled from nav args if available)
+    private val initialCategory = savedStateHandle.get<String>("category")?.let {
+        if (it == "FACT") FeatureCategory.FACT else if (it == "QUOTE") FeatureCategory.QUOTE else null
+    } ?: FeatureCategory.FACT
+
+    private val _selectedCategory = MutableStateFlow(initialCategory)
     val selectedCategory: StateFlow<FeatureCategory> = _selectedCategory.asStateFlow()
 
     // Search results

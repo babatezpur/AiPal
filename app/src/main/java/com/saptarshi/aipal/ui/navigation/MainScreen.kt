@@ -98,7 +98,7 @@ fun MainScreen() {
             ) {
                 val topic = it.arguments?.getString("topic") ?: ""
                 val category = it.arguments?.getString("category") ?: ""
-                SearchScreen(topic = topic, category = category)
+                SearchScreen(topic = topic, category = category, navController = navController)
             }
 
             // ---- Chats Tab ----
@@ -125,6 +125,7 @@ fun MainScreen() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun MainScreenPreview() {

@@ -34,15 +34,14 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import androidx.compose.material.icons.filled.Lightbulb
 import androidx.compose.material.icons.filled.FormatQuote
+import androidx.navigation.NavController
 
 @RequiresApi(Build.VERSION_CODES.O)
-@Preview
 @Composable
-fun RecentActivityTile(factOrQuote: RecentActivity = RecentActivity(
-    12,
-    "Topic is very long this time, cause we are tring to test out the ",
-    FeatureCategory.FACT, 1772893614000
-)) {
+fun RecentActivityTile(
+    factOrQuote: RecentActivity,
+    onClick : () -> Unit = {}
+) {
 
 
     // Date formatting
@@ -70,6 +69,9 @@ fun RecentActivityTile(factOrQuote: RecentActivity = RecentActivity(
 
 
     Card(
+        onClick = {
+            onClick()
+        },
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant,
         ),

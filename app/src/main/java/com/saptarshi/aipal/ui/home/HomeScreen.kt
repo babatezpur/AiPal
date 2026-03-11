@@ -122,7 +122,7 @@ fun HomeScreenContent(
                             .padding(bottom = 5.dp)
                     )
                 recentActivities.forEach {
-                    RecentActivityTile(it)
+                    RecentActivityTile(it, { onActivityCLick(it) })
                 }
             }
 

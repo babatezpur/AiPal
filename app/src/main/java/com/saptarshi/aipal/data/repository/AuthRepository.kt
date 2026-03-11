@@ -31,7 +31,7 @@ class AuthRepository @Inject constructor(
                     UserProfileEntity(email=email, name=username, photoPath = null)
                 )
                 val body = response.body()!!
-                Resource.Success<User>(User(body.user.id, body.user.email, body.user.name))
+                Resource.Success<User>(User(body.user.id, body.user.email, body.user.username))
             } else {
                 Resource.Error(response.message())
             }
@@ -47,9 +47,9 @@ class AuthRepository @Inject constructor(
                 val body = response.body()!!
                 tokenManager.saveToken(body.token)
                 userProfileDao.insertUserProfile(
-                    UserProfileEntity(email = body.user.email, name = body.user.name, photoPath = null)
+                    UserProfileEntity(email = body.user.email, name = body.user.username, photoPath = null)
                 )
-                Resource.Success(User(body.user.id, body.user.email, body.user.name))
+                Resource.Success(User(body.user.id, body.user.email, body.user.username))
             } else {
                 Resource.Error("Invalid email or password")
             }

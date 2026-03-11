@@ -2,13 +2,14 @@ package com.saptarshi.aipal.data.remote.api
 
 import com.saptarshi.aipal.data.remote.dto.FavouriteDto
 import com.saptarshi.aipal.data.remote.dto.SaveFavouriteRequest
+import com.saptarshi.aipal.data.remote.dto.SaveFavouriteResponse
 import retrofit2.Response
 import retrofit2.http.*
 
 interface FavouritesApi {
 
     @POST("favourites/")
-    suspend fun saveFavourite(@Body request: SaveFavouriteRequest): Response<FavouriteDto>
+    suspend fun saveFavourite(@Body request: SaveFavouriteRequest): Response<SaveFavouriteResponse>
 
     @GET("favourites/")
     suspend fun getFavourites(@Query("category") category: String? = null): Response<List<FavouriteDto>>

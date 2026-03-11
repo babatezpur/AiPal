@@ -59,7 +59,7 @@ class FavouritesRepository @Inject constructor(
                 )
             )
             if (response.isSuccessful) {
-                val item = response.body()!!
+                val item = response.body()!!.favourite
                 savedItemDao.insertSavedItem(
                     SavedItemEntity(item.id, item.category, item.content, item.author, item.topic, System.currentTimeMillis())
                 )

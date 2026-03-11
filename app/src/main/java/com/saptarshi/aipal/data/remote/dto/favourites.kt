@@ -9,13 +9,18 @@ data class SaveFavouriteRequest(
     val topic: String
 )
 
+data class SaveFavouriteResponse(
+    val favourite: FavouriteDto = FavouriteDto(),
+    val message: String = ""
+)
+
 data class FavouriteDto(
-    val id: Int,
-    val category: String,
-    val content: String,
-    val author: String?,
-    val topic: String,
+    val id: Int = 0,
+    val category: String = "",
+    val content: String = "",
+    val author: String? = null,
+    val topic: String = "",
     @SerializedName("created_at")
-    val createdAt: String
+    val createdAt: String = ""
 )
 

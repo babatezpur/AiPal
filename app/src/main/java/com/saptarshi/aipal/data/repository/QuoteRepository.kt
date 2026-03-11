@@ -20,7 +20,7 @@ class QuoteRepository @Inject constructor(
 ) {
 
 
-    suspend fun getFacts(topic: String, comment: String? = null) : Resource<List<Quote>> {
+    suspend fun getQuotes(topic: String, comment: String? = null) : Resource<List<Quote>> {
         return try{
 
             val response = quotesApi.getQuotes(QuotesRequest(topic, comment))

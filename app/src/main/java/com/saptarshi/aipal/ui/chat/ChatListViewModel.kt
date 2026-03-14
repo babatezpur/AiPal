@@ -8,12 +8,22 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 @HiltViewModel
-class ChatListViewModel(
+class ChatListViewModel @Inject constructor(
     private val conversationRepository: ConversationRepository
 ) : ViewModel() {
+
+    init {
+       viewModelScope.launch {
+            conversationRepository.refreshConversations()
+        }
+    }
 
     val recentChats : StateFlow<List<Conversation>> =
         conversationRepository.getCachedConversation()

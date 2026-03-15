@@ -4,16 +4,12 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Chat
-import androidx.compose.material.icons.filled.FormatQuote
-import androidx.compose.material.icons.filled.Lightbulb
 import androidx.compose.material.icons.filled.MarkUnreadChatAlt
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -28,8 +24,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.saptarshi.aipal.domain.model.Conversation
-import com.saptarshi.aipal.domain.model.FeatureCategory
-import com.saptarshi.aipal.domain.model.RecentActivity
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -120,7 +114,7 @@ fun ChatTile(
             text = "Messages left: ${5 - chat.messageCount}",
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 5.dp, bottom = 5.dp, end = 20.dp),
+                .padding(top = 5.dp, bottom = 5.dp, end = 30.dp),
             textAlign = TextAlign.End,
             style = MaterialTheme.typography.bodySmall,
             fontStyle = FontStyle.Italic

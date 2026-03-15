@@ -2,6 +2,7 @@ package com.saptarshi.aipal.ui.chat
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,15 +27,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.saptarshi.aipal.domain.model.Conversation
-import com.saptarshi.aipal.domain.model.RecentActivity
 import com.saptarshi.aipal.ui.components.ChatTile
-import com.saptarshi.aipal.ui.components.RecentActivityTile
-import com.saptarshi.aipal.ui.home.HomeScreenContent
-import com.saptarshi.aipal.ui.home.HomeViewModel
 import kotlin.collections.forEach
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -69,7 +67,7 @@ fun ChatListScreenContent(
 
 
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         CenterAlignedTopAppBar(
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = MaterialTheme.colorScheme.primary,
@@ -110,7 +108,7 @@ fun ChatListScreenContent(
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
                     .padding(top = 10.dp, start = 10.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+                verticalArrangement = Arrangement.spacedBy(15.dp)
             ) {
 
 
@@ -122,7 +120,7 @@ fun ChatListScreenContent(
                             .padding(bottom = 5.dp)
                     )
                 recentChats.forEach {
-                    // ChatTile(it, { onChatClick(it) })
+                     ChatTile(it, { onChatClick(it) })
                 }
             }
 
@@ -138,3 +136,35 @@ fun ChatListScreenContent(
     }
 }
 
+// PreView
+@RequiresApi(Build.VERSION_CODES.O)
+@Preview
+@Composable
+fun ChatListScreenPreview() {
+    val recentChats = listOf(
+        Conversation(
+            id = 1,
+            title = "Chat about Space",
+            messageCount = 3,
+            createdAt = System.currentTimeMillis()
+        ),
+        Conversation(
+            id = 2,
+            title = "Chat about Technology",
+            messageCount = 5,
+            createdAt = System.currentTimeMillis() - 3600000
+        ),
+        Conversation(
+            id = 3,
+            title = "Chat about History",
+            messageCount = 2,
+            createdAt = System.currentTimeMillis() - 7200000
+        )
+    )
+
+    ChatListScreenContent(
+        recentChats = recentChats,
+        onChatClick = {},
+        onFabClick = {}
+    )
+}

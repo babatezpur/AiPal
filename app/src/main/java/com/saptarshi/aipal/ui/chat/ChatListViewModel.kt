@@ -8,8 +8,10 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import androidx.lifecycle.viewModelScope
+import com.saptarshi.aipal.utils.Resource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,6 +20,10 @@ import javax.inject.Inject
 class ChatListViewModel @Inject constructor(
     private val conversationRepository: ConversationRepository
 ) : ViewModel() {
+
+    private val _newConversationState = MutableStateFlow<Resource<Int>?>(null)
+    val newConversationState: StateFlow<Resource<Int>?> = _newConversationState
+
 
     init {
        viewModelScope.launch {
@@ -30,5 +36,16 @@ class ChatListViewModel @Inject constructor(
             .stateIn(viewModelScope,
                 SharingStarted.WhileSubscribed(5000),
                 emptyList())
+
+    fun startNewConversation() {
+        viewModelScope.launch {
+            _newConversationState.value = Resource.Loading
+            _newConversationState.value = conversationRepository.startConversation()
+        }
+    }
+
+    fun resetNewConversationState() {
+        _newConversationState.value = null
+    }
 
 }

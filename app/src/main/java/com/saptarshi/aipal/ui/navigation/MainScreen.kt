@@ -21,11 +21,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.saptarshi.aipal.ui.chat.ChatListScreen
+import com.saptarshi.aipal.ui.chat.ChatScreen
 import com.saptarshi.aipal.ui.home.HomeScreen
 import com.saptarshi.aipal.ui.home.SearchScreen
 import com.saptarshi.aipal.ui.theme.AiPalTheme
@@ -103,12 +106,22 @@ fun MainScreen() {
 
             // ---- Chats Tab ----
             composable(BottomNavTab.CHATS.route) {
-                PlaceholderScreen("Chats")
+                ChatListScreen(navController)
             }
 
             // Individual chat screen (launched by tapping a conversation or FAB)
-            composable("chat/{conversationId}") {
-                PlaceholderScreen("Chat Detail")
+            composable(
+                "chat/{conversationId}",
+                arguments = listOf(
+                    navArgument("conversationId") { type = NavType.StringType }
+                )
+            ) { navBackStackEntry ->
+                val conversationId = navBackStackEntry.arguments?.getInt("conversationId") ?: return@composable
+                ChatScreen(
+                    conversationId = conversationId,
+                    onBackClick = { navController.popBackStack()}
+
+                )
             }
 
             // ---- Profile Tab ----

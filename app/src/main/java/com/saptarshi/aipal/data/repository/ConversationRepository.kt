@@ -3,9 +3,11 @@ package com.saptarshi.aipal.data.repository
 import com.saptarshi.aipal.data.local.db.dao.ConversationDao
 import com.saptarshi.aipal.data.local.db.entity.ConversationEntity
 import com.saptarshi.aipal.data.remote.api.ConversationApi
+import com.saptarshi.aipal.data.remote.dto.StartConversationRequest
 import com.saptarshi.aipal.data.remote.dto.SendMessageRequest
 import com.saptarshi.aipal.domain.model.Conversation
 import com.saptarshi.aipal.domain.model.Message
+import com.saptarshi.aipal.domain.model.StartResult
 import com.saptarshi.aipal.utils.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -28,18 +30,22 @@ class ConversationRepository @Inject constructor(
         return try {
             val response = conversationApi.getConversations()
             if (response.isSuccessful) {
-                val conversations = response.body()!!
+                val conversations = response.body()!!.conversations
                 val entities = conversations.map {
+                    val msgCount = it.messageCount ?: it.messages?.size ?: 0
                     ConversationEntity(
                         id = it.id,
                         title = it.title,
-                        messageCount = it.messages.size,
+                        messageCount = msgCount,
                         createdAt = System.currentTimeMillis()
                     )
                 }
                 conversationDao.insertConversations(entities)
                 conversationDao.deleteOldConversations()
-                Resource.Success(conversations.map { Conversation(it.id, it.title, System.currentTimeMillis(), it.messages.size) })
+                Resource.Success(conversations.map {
+                    val msgCount = it.messageCount ?: it.messages?.size ?: 0
+                    Conversation(it.id, it.title, System.currentTimeMillis(), msgCount)
+                })
             } else {
                 Resource.Error("Failed to fetch conversations")
             }
@@ -48,11 +54,14 @@ class ConversationRepository @Inject constructor(
         }
     }
 
-    suspend fun startConversation(): Resource<Int> {
+    suspend fun startConversation(message: String): Resource<StartResult> {
         return try {
-            val response = conversationApi.startConversation()
+            val response = conversationApi.startConversation(StartConversationRequest(message))
             if (response.isSuccessful) {
-                Resource.Success(response.body()!!.conversationId)
+                val body = response.body()!!
+                Resource.Success(
+                    StartResult(body.conversationId, body.reply, body.messagesRemaining)
+                )
             } else {
                 val errorMsg = if (response.code() == 429) "Daily limit reached" else "Failed to start conversation"
                 Resource.Error(errorMsg)
@@ -66,8 +75,8 @@ class ConversationRepository @Inject constructor(
         return try {
             val response = conversationApi.getConversation(conversationId)
             if (response.isSuccessful) {
-                val convo = response.body()!!
-                val messages = convo.messages.map {
+                val convo = response.body()!!.conversation
+                val messages = (convo.messages ?: emptyList()).map {
                     Message(it.id, it.conversationId, it.role, it.content, System.currentTimeMillis())
                 }
                 Resource.Success(messages)

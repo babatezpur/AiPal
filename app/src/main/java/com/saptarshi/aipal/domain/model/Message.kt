@@ -5,5 +5,5 @@ data class Message(
     val conversationId: Int,
     val role: String,       // "user" or "assistant"
     val content: String,
-    val createdAt: Long
+    val createdAt: Long = System.currentTimeMillis()
 )

@@ -22,7 +22,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -34,7 +33,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.saptarshi.aipal.domain.model.Conversation
 import com.saptarshi.aipal.ui.components.ChatTile
-import com.saptarshi.aipal.utils.Resource
 import kotlin.collections.forEach
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -44,15 +42,6 @@ fun ChatListScreen (
     viewModel: ChatListViewModel = hiltViewModel()
 ) {
     val recentChats by viewModel.recentChats.collectAsState()
-    val newConversationState by viewModel.newConversationState.collectAsState()
-
-    LaunchedEffect(newConversationState) {
-        if (newConversationState is Resource.Success) {
-            val conversationId = newConversationState?.data
-            navController.navigate("chat/$conversationId")
-            navController.navigate("chat/$conversationId")
-        }
-    }
 
     ChatListScreenContent(
         recentChats,
@@ -60,7 +49,7 @@ fun ChatListScreen (
             navController.navigate("chat/${chat.id}")
         },
         onFabClick = {
-            viewModel.startNewConversation()
+            navController.navigate("chat/new")
         }
     )
 }

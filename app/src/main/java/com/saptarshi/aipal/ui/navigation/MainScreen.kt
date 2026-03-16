@@ -109,18 +109,19 @@ fun MainScreen() {
                 ChatListScreen(navController)
             }
 
-            // Individual chat screen (launched by tapping a conversation or FAB)
+            // Individual chat screen
+            // "chat/new" = new conversation, "chat/{id}" = existing conversation
             composable(
                 "chat/{conversationId}",
                 arguments = listOf(
                     navArgument("conversationId") { type = NavType.StringType }
                 )
             ) { navBackStackEntry ->
-                val conversationId = navBackStackEntry.arguments?.getInt("conversationId") ?: return@composable
+                val rawId = navBackStackEntry.arguments?.getString("conversationId")
+                val conversationId = if (rawId == "new") null else rawId?.toIntOrNull()
                 ChatScreen(
                     conversationId = conversationId,
-                    onBackClick = { navController.popBackStack()}
-
+                    onBackClick = { navController.popBackStack() }
                 )
             }
 

@@ -6,3 +6,9 @@ data class Conversation(
     val createdAt: Long,
     val messageCount: Int,
 )
+
+data class StartResult(
+    val conversationId: Int,
+    val reply: String,
+    val messagesRemaining: Int
+)

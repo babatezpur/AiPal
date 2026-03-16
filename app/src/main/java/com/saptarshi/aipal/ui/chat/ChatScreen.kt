@@ -44,7 +44,7 @@ import com.saptarshi.aipal.utils.Resource
 
 @Composable
 fun ChatScreen(
-    conversationId: Int,
+    conversationId: Int?,
     onBackClick: () -> Unit,
     viewmodel: ChatViewModel = hiltViewModel()
 ) {
@@ -55,17 +55,21 @@ fun ChatScreen(
     val messagesRemaining by viewmodel.messagesRemaining.collectAsState()
 
     LaunchedEffect(conversationId) {
-        viewmodel.loadMessages(conversationId)
+        if (conversationId != null) {
+            viewmodel.loadMessages(conversationId)
+        } else {
+            viewmodel.initNewChat()
+        }
     }
 
     ChatScreenContent(
         messages = messages,
         loadState = loadState,
         isSending = sendState is Resource.Loading,
-        sendError = (sendState as? Resource.Error)?.data,
-        onSendClick = { msg : String ->
-            viewmodel.sendMessage(conversationId, msg)
-                      },
+        sendError = (sendState as? Resource.Error)?.message,
+        onSendClick = { msg: String ->
+            viewmodel.sendMessage(msg)
+        },
         onBackClick = onBackClick,
         messagesRemaining = messagesRemaining,
     )

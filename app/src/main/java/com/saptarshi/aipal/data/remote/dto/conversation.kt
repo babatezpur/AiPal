@@ -2,10 +2,16 @@ package com.saptarshi.aipal.data.remote.dto
 
 import com.google.gson.annotations.SerializedName
 
+data class StartConversationRequest(
+    val message: String
+)
+
 data class ConversationStartResponse(
     @SerializedName("conversation_id")
     val conversationId: Int,
-    val message: String
+    val reply: String,
+    @SerializedName("messages_remaining")
+    val messagesRemaining: Int
 )
 
 

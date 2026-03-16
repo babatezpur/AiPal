@@ -14,9 +14,13 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class ChatViewModel @Inject constructor (
+class ChatViewModel @Inject constructor(
     private val conversationRepository: ConversationRepository,
-) : ViewModel(){
+) : ViewModel() {
+
+    // Current conversation ID — null means new chat mode
+    private var _conversationId: Int? = null
+
     // All messages in the conversation
     private val _messages = MutableStateFlow<List<Message>>(emptyList())
     val messages: StateFlow<List<Message>> = _messages.asStateFlow()
@@ -33,14 +37,14 @@ class ChatViewModel @Inject constructor (
     private val _messagesRemaining = MutableStateFlow(5)
     val messagesRemaining: StateFlow<Int> = _messagesRemaining.asStateFlow()
 
-
+    /** Mode 2: Existing chat — load messages from backend */
     fun loadMessages(conversationId: Int) {
+        _conversationId = conversationId
         viewModelScope.launch {
             _loadState.value = Resource.Loading
             when (val result = conversationRepository.getConversationMessages(conversationId)) {
                 is Resource.Success -> {
                     _messages.value = result.data ?: emptyList()
-                    // Calculate remaining from how many user messages exist
                     val userMessages = _messages.value.count { it.role == "user" }
                     _messagesRemaining.value = 5 - userMessages
                     _loadState.value = Resource.Success(Unit)
@@ -49,45 +53,60 @@ class ChatViewModel @Inject constructor (
                     _loadState.value = Resource.Error(result.message ?: "Unknown error")
                 }
                 else -> {}
-
             }
-
         }
     }
 
-    fun sendMessage(conversationId: Int, content: String) {
+    /** Mode 1: New chat — empty screen, ready for first message */
+    fun initNewChat() {
+        _conversationId = null
+        _messages.value = emptyList()
+        _messagesRemaining.value = 5
+        _loadState.value = Resource.Success(Unit)
+    }
 
+    fun sendMessage(content: String) {
         if (content.isBlank() || _messagesRemaining.value <= 0) return
 
         viewModelScope.launch {
-
-            val message = Message(
-                id = 0,
-                conversationId = conversationId,
-                role = "user",
-                content = content,
-            )
-
-            _messages.value += message
-
+            // Add user message optimistically
+            val userMsg = Message(0, _conversationId ?: 0, "user", content)
+            _messages.value += userMsg
             _sendState.value = Resource.Loading
 
-            when (val result = conversationRepository.sendMessage(conversationId, content)) {
-                is Resource.Success -> {
-                    // Append new messages to the list
-
-                    val aiMessage = result.data!!
-                    _messages.value += aiMessage
-                    _messagesRemaining.value -= 1
-                    _sendState.value = Resource.Success(Unit)
+            if (_conversationId == null) {
+                // New chat — POST /conversation/start
+                when (val result = conversationRepository.startConversation(content)) {
+                    is Resource.Success -> {
+                        val data = result.data!!
+                        _conversationId = data.conversationId
+                        _messagesRemaining.value = data.messagesRemaining
+                        val aiMsg = Message(0, data.conversationId, "assistant", data.reply)
+                        _messages.value += aiMsg
+                        _sendState.value = Resource.Success(Unit)
+                    }
+                    is Resource.Error -> {
+                        _messages.value = _messages.value.dropLast(1)
+                        _sendState.value = Resource.Error(result.message ?: "Failed to start conversation")
+                    }
+                    else -> {}
                 }
-                is Resource.Error -> {
-                    _messages.value = _messages.value.dropLast(1)
-                    _sendState.value = Resource.Error(result.message ?: "Unknown error")
+            } else {
+                // Existing chat — POST /conversation/message
+                when (val result = conversationRepository.sendMessage(_conversationId!!, content)) {
+                    is Resource.Success -> {
+                        val aiMsg = result.data!!
+                        _messages.value += aiMsg
+                        _messagesRemaining.value -= 1
+                        _sendState.value = Resource.Success(Unit)
+                    }
+                    is Resource.Error -> {
+                        _messages.value = _messages.value.dropLast(1)
+                        _sendState.value = Resource.Error(result.message ?: "Failed to send message")
+                    }
+                    else -> {}
                 }
-                else -> {}
             }
         }
     }
-
 }

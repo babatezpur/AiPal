@@ -3,9 +3,11 @@ package com.saptarshi.aipal.data.repository
 import com.saptarshi.aipal.data.local.db.dao.ConversationDao
 import com.saptarshi.aipal.data.local.db.entity.ConversationEntity
 import com.saptarshi.aipal.data.remote.api.ConversationApi
+import com.saptarshi.aipal.data.remote.dto.StartConversationRequest
 import com.saptarshi.aipal.data.remote.dto.SendMessageRequest
 import com.saptarshi.aipal.domain.model.Conversation
 import com.saptarshi.aipal.domain.model.Message
+import com.saptarshi.aipal.domain.model.StartResult
 import com.saptarshi.aipal.utils.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -48,11 +50,14 @@ class ConversationRepository @Inject constructor(
         }
     }
 
-    suspend fun startConversation(): Resource<Int> {
+    suspend fun startConversation(message: String): Resource<StartResult> {
         return try {
-            val response = conversationApi.startConversation()
+            val response = conversationApi.startConversation(StartConversationRequest(message))
             if (response.isSuccessful) {
-                Resource.Success(response.body()!!.conversationId)
+                val body = response.body()!!
+                Resource.Success(
+                    StartResult(body.conversationId, body.reply, body.messagesRemaining)
+                )
             } else {
                 val errorMsg = if (response.code() == 429) "Daily limit reached" else "Failed to start conversation"
                 Resource.Error(errorMsg)

@@ -32,7 +32,7 @@ data class SendMessageResponse(
 data class ConversationDto(
     val id: Int,
     val title: String,
-    val messages: List<MessageDto>,
+    val messages: List<MessageDto>? = null,
     @SerializedName("created_at")
     val createdAt: String
 )
@@ -45,4 +45,12 @@ data class MessageDto(
     val content: String,
     @SerializedName("created_at")
     val createdAt: String
+)
+
+data class ConversationListResponse(
+    val conversations: List<ConversationDto>
+)
+
+data class ConversationDetailResponse(
+    val conversation: ConversationDto
 )

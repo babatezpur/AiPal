@@ -30,18 +30,18 @@ class ConversationRepository @Inject constructor(
         return try {
             val response = conversationApi.getConversations()
             if (response.isSuccessful) {
-                val conversations = response.body()!!
+                val conversations = response.body()!!.conversations
                 val entities = conversations.map {
                     ConversationEntity(
                         id = it.id,
                         title = it.title,
-                        messageCount = it.messages.size,
+                        messageCount = it.messages?.size ?: 0,
                         createdAt = System.currentTimeMillis()
                     )
                 }
                 conversationDao.insertConversations(entities)
                 conversationDao.deleteOldConversations()
-                Resource.Success(conversations.map { Conversation(it.id, it.title, System.currentTimeMillis(), it.messages.size) })
+                Resource.Success(conversations.map { Conversation(it.id, it.title, System.currentTimeMillis(), it.messages?.size ?: 0) })
             } else {
                 Resource.Error("Failed to fetch conversations")
             }
@@ -71,8 +71,8 @@ class ConversationRepository @Inject constructor(
         return try {
             val response = conversationApi.getConversation(conversationId)
             if (response.isSuccessful) {
-                val convo = response.body()!!
-                val messages = convo.messages.map {
+                val convo = response.body()!!.conversation
+                val messages = (convo.messages ?: emptyList()).map {
                     Message(it.id, it.conversationId, it.role, it.content, System.currentTimeMillis())
                 }
                 Resource.Success(messages)

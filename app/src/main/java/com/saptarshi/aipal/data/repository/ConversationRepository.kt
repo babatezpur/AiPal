@@ -32,16 +32,20 @@ class ConversationRepository @Inject constructor(
             if (response.isSuccessful) {
                 val conversations = response.body()!!.conversations
                 val entities = conversations.map {
+                    val msgCount = it.messageCount ?: it.messages?.size ?: 0
                     ConversationEntity(
                         id = it.id,
                         title = it.title,
-                        messageCount = it.messages?.size ?: 0,
+                        messageCount = msgCount,
                         createdAt = System.currentTimeMillis()
                     )
                 }
                 conversationDao.insertConversations(entities)
                 conversationDao.deleteOldConversations()
-                Resource.Success(conversations.map { Conversation(it.id, it.title, System.currentTimeMillis(), it.messages?.size ?: 0) })
+                Resource.Success(conversations.map {
+                    val msgCount = it.messageCount ?: it.messages?.size ?: 0
+                    Conversation(it.id, it.title, System.currentTimeMillis(), msgCount)
+                })
             } else {
                 Resource.Error("Failed to fetch conversations")
             }

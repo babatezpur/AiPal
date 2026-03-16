@@ -33,6 +33,8 @@ data class ConversationDto(
     val id: Int,
     val title: String,
     val messages: List<MessageDto>? = null,
+    @SerializedName("message_count")
+    val messageCount: Int? = null,
     @SerializedName("created_at")
     val createdAt: String
 )

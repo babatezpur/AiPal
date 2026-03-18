@@ -40,7 +40,7 @@ fun ChatTile(
 
     // Date formatting
     // Formatter
-    val formatter = DateTimeFormatter.ofPattern("d MMMM")
+    val formatter = DateTimeFormatter.ofPattern("dd MMMM")
 
     // Converting timestamp to LocalDateTime
     val localDateTimeSystemDefault: String? = LocalDateTime.ofInstant(

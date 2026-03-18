@@ -11,6 +11,9 @@ import com.saptarshi.aipal.domain.model.StartResult
 import com.saptarshi.aipal.utils.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.time.LocalDateTime
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -20,6 +23,12 @@ class ConversationRepository @Inject constructor(
     private val conversationApi: ConversationApi,
     private val conversationDao: ConversationDao,
 ) {
+    private fun parseTimestamp(isoString: String): Long {
+        return LocalDateTime.parse(isoString, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+            .toInstant(ZoneOffset.UTC)
+            .toEpochMilli()
+    }
+
     fun getCachedConversation() : Flow<List<Conversation>> {
         return conversationDao.getRecentConversations().map { entity ->
             entity.map { Conversation(it.id, it.title, it.createdAt, it.messageCount) }
@@ -37,14 +46,14 @@ class ConversationRepository @Inject constructor(
                         id = it.id,
                         title = it.title,
                         messageCount = msgCount,
-                        createdAt = System.currentTimeMillis()
+                        createdAt = parseTimestamp(it.createdAt)
                     )
                 }
                 conversationDao.insertConversations(entities)
                 conversationDao.deleteOldConversations()
                 Resource.Success(conversations.map {
                     val msgCount = it.messageCount ?: it.messages?.size ?: 0
-                    Conversation(it.id, it.title, System.currentTimeMillis(), msgCount)
+                    Conversation(it.id, it.title, parseTimestamp(it.createdAt), msgCount)
                 })
             } else {
                 Resource.Error("Failed to fetch conversations")
@@ -59,6 +68,15 @@ class ConversationRepository @Inject constructor(
             val response = conversationApi.startConversation(StartConversationRequest(message))
             if (response.isSuccessful) {
                 val body = response.body()!!
+                // Cache in Room so ChatListScreen picks it up immediately
+                conversationDao.insertAndCleanup(
+                    ConversationEntity(
+                        id = body.conversationId,
+                        title = message.take(100),
+                        messageCount = 1,
+                        createdAt = System.currentTimeMillis()
+                    )
+                )
                 Resource.Success(
                     StartResult(body.conversationId, body.reply, body.messagesRemaining)
                 )

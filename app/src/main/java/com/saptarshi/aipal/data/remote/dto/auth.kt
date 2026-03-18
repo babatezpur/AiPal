@@ -16,7 +16,6 @@ data class LoginRequest(
 data class AuthResponse(
     val message: String,
     val user: UserDto,
-    @SerializedName("access_token")
     val token: String
 )
 

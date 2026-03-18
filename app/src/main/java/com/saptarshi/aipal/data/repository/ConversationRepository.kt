@@ -59,6 +59,15 @@ class ConversationRepository @Inject constructor(
             val response = conversationApi.startConversation(StartConversationRequest(message))
             if (response.isSuccessful) {
                 val body = response.body()!!
+                // Cache in Room so ChatListScreen picks it up immediately
+                conversationDao.insertAndCleanup(
+                    ConversationEntity(
+                        id = body.conversationId,
+                        title = message.take(100),
+                        messageCount = 1,
+                        createdAt = System.currentTimeMillis()
+                    )
+                )
                 Resource.Success(
                     StartResult(body.conversationId, body.reply, body.messagesRemaining)
                 )

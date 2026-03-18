@@ -82,7 +82,7 @@ fun MainScreen() {
         NavHost(
             navController = navController,
             startDestination = BottomNavTab.HOME.route,
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding())
         ) {
 
             // ---- Home Tab ----

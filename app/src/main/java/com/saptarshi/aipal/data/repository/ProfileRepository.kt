@@ -27,5 +27,4 @@ class ProfileRepository @Inject constructor(
             userProfileDao.insertUserProfile(existing.copy(name = name))
         }
     }
-    }
 }

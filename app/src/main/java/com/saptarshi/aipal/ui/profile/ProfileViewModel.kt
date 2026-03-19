@@ -49,22 +49,27 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun copyImageToInternalStorage(context: Context, uri: Uri): String {
+        // Delete old photo if it exists
+        val oldPath = _imgPath.value
+        if (oldPath.isNotEmpty()) {
+            File(oldPath).delete()
+        }
+
         val inputStream = context.contentResolver.openInputStream(uri)
-        val file = File(context.filesDir, "profile_photo.jpg")
+        val file = File(context.filesDir, "profile_pic_${System.currentTimeMillis()}.jpg")
         inputStream?.use { input ->
             file.outputStream().use { output ->
                 input.copyTo(output)
             }
         }
-        return file.absolutePath  // this is what you save in Room
+        return file.absolutePath
     }
 
     fun onPhotoPicked(context: Context, uri: Uri) {
         viewModelScope.launch {
             val path = copyImageToInternalStorage(context, uri)
             profileRepository.updatePhoto(path)
-            // Append timestamp to bust Coil's cache (same file path = cached image)
-            _imgPath.value = "$path?t=${System.currentTimeMillis()}"
+            _imgPath.value = path
         }
     }
 

@@ -47,6 +47,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
+import java.io.File
 import com.saptarshi.aipal.R
 import com.saptarshi.aipal.ui.theme.AiPalTheme
 
@@ -191,9 +194,16 @@ fun ProfileInfo(name: String, email: String, onNameChange: (newName : String) ->
 
 @Composable
 fun ProfilePicture(imgPath: String, onClick: () -> Unit = {}) {
+    val context = LocalContext.current
     Box(contentAlignment = Alignment.BottomEnd) {
         AsyncImage(
-            model = imgPath.ifEmpty { null },
+            model = if (imgPath.isNotEmpty()) {
+                ImageRequest.Builder(context)
+                    .data(File(imgPath))
+                    .memoryCachePolicy(CachePolicy.DISABLED)
+                    .diskCachePolicy(CachePolicy.DISABLED)
+                    .build()
+            } else null,
             contentDescription = "Profile photo",
             placeholder = painterResource(R.drawable.ic_default_avatar),
             error = painterResource(R.drawable.ic_default_avatar),

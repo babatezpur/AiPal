@@ -29,6 +29,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -108,17 +111,19 @@ fun onNameChange(newName: String) {
 @Composable
 fun ProfileInfo(name: String, email: String, onNameChange: (newName : String) -> Unit) {
 
-    var isEditing = false
+    var isEditing by remember { mutableStateOf(false) }
+    var editedName by remember { mutableStateOf(name) }
     
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp),
+            .padding(horizontal = 20.dp)
+            .padding(top = 20.dp),
         horizontalAlignment = Alignment.Start
     ) {
         Text(
-            text = "Name",
+            text = "Username",
             style = MaterialTheme.typography.bodyLarge,
             // bold the text
         )
@@ -140,21 +145,22 @@ fun ProfileInfo(name: String, email: String, onNameChange: (newName : String) ->
                     contentDescription = "Change name",
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.clickable {
+                        isEditing = true
                         onNameChange(name)
                     }.padding(end = 30.dp)
                 )
             }
             else {
                 OutlinedTextField(
-                    value = name,
-                    onValueChange = { onNameChange(it) },
+                    value = editedName,
+                    onValueChange = { editedName = it },
                     singleLine = true,
                     modifier = Modifier.weight(1f).padding(top=5.dp)
                 )
                 Button(
                     onClick = {
                         isEditing = false
-                        onNameChange(name)
+                        onNameChange(editedName)
                               },
                     modifier = Modifier.padding(start = 10.dp),
                 ) {

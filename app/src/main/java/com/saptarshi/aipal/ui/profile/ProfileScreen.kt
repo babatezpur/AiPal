@@ -1,7 +1,5 @@
 package com.saptarshi.aipal.ui.profile
 
-import android.R.attr.end
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -59,9 +57,11 @@ fun ProfileScreen(
     val imgPath by profileViewModel.imgPath
 
     ProfileViewModelContent(
-        name,
-        email,
-        imgPath
+        name = name,
+        email = email,
+        imgPath = imgPath,
+        onNameChange = { newName -> profileViewModel.updateName(newName) },
+        onPhotoClick = { /* TODO: launch gallery picker */ }
     )
 
 }
@@ -72,7 +72,9 @@ fun ProfileScreen(
 fun ProfileViewModelContent(
     name: String,
     email: String,
-    imgPath: String
+    imgPath: String,
+    onNameChange: (String) -> Unit = {},
+    onPhotoClick: () -> Unit = {}
 ) {
 
     Column(
@@ -91,23 +93,9 @@ fun ProfileViewModelContent(
             },
         )
 
-        ProfilePicture(imgPath, onClick = {
-            // Handle profile picture change
-            handleChangeDp()
-        })
-        ProfileInfo(name, email ) { newName ->
-            onNameChange(newName)
-        }
-
+        ProfilePicture(imgPath, onClick = onPhotoClick)
+        ProfileInfo(name, email, onNameChange = onNameChange)
     }
-}
-
-fun handleChangeDp() {
-
-}
-
-fun onNameChange(newName: String) {
-    //
 }
 
 @Composable
@@ -151,10 +139,9 @@ fun ProfileInfo(name: String, email: String, onNameChange: (newName : String) ->
                     imageVector = Icons.Filled.Edit,
                     contentDescription = "Change name",
                     tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.clickable {
-                        isEditing = true
-                        onNameChange(name)
-                    }.padding(end = 30.dp)
+                    modifier = Modifier
+                        .clickable { isEditing = true }
+                        .padding(end = 30.dp)
                 )
             }
             else {

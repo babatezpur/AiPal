@@ -1,5 +1,8 @@
 package com.saptarshi.aipal.ui.profile
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -41,6 +44,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.saptarshi.aipal.R
@@ -52,6 +56,16 @@ fun ProfileScreen(
     profileViewModel : ProfileViewModel = hiltViewModel()
 ) {
 
+    val context = LocalContext.current
+
+    val photoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        if (uri != null) {
+            profileViewModel.onPhotoPicked(context, uri)
+        }
+    }
+
     val name by profileViewModel.name
     val email by profileViewModel.email
     val imgPath by profileViewModel.imgPath
@@ -61,7 +75,7 @@ fun ProfileScreen(
         email = email,
         imgPath = imgPath,
         onNameChange = { newName -> profileViewModel.updateName(newName) },
-        onPhotoClick = { /* TODO: launch gallery picker */ }
+        onPhotoClick = { photoPickerLauncher.launch("image/*") }
     )
 
 }

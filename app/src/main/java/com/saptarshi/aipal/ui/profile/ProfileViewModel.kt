@@ -28,6 +28,10 @@ class ProfileViewModel @Inject constructor(
 
 
     init {
+        refreshData()
+    }
+
+    fun refreshData() {
         viewModelScope.launch {
             val profile = profileRepository.getProfile()
             _name.value = profile?.name ?: ""
@@ -59,7 +63,8 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             val path = copyImageToInternalStorage(context, uri)
             profileRepository.updatePhoto(path)
-            _imgPath.value = path
+            // Append timestamp to bust Coil's cache (same file path = cached image)
+            _imgPath.value = "$path?t=${System.currentTimeMillis()}"
         }
     }
 

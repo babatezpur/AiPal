@@ -1,6 +1,7 @@
 package com.saptarshi.aipal.ui.profile
 
 import android.R.attr.end
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -113,6 +115,11 @@ fun ProfileInfo(name: String, email: String, onNameChange: (newName : String) ->
 
     var isEditing by remember { mutableStateOf(false) }
     var editedName by remember { mutableStateOf(name) }
+
+    // Sync editedName when name loads from Room
+    LaunchedEffect(name) {
+        editedName = name
+    }
     
 
     Column(

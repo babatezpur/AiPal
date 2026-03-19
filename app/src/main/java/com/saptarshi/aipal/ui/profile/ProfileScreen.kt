@@ -1,14 +1,20 @@
 package com.saptarshi.aipal.ui.profile
 
-import android.R.attr.top
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -73,18 +79,35 @@ fun ProfileViewModelContent(
 }
 
 @Composable
-fun ProfilePicture(imgPath: String) {
-    AsyncImage(
-        model = imgPath.ifEmpty { null },
-        contentDescription = "Profile photo",
-        placeholder = painterResource(R.drawable.ic_default_avatar),
-        error = painterResource(R.drawable.ic_default_avatar),
-        fallback = painterResource(R.drawable.ic_default_avatar),
-        contentScale = ContentScale.Crop,
-        modifier = Modifier
-            .size(160.dp)
-            .clip(CircleShape)
-    )
+fun ProfilePicture(imgPath: String, onClick: () -> Unit = {}) {
+    Box(contentAlignment = Alignment.BottomEnd) {
+        AsyncImage(
+            model = imgPath.ifEmpty { null },
+            contentDescription = "Profile photo",
+            placeholder = painterResource(R.drawable.ic_default_avatar),
+            error = painterResource(R.drawable.ic_default_avatar),
+            fallback = painterResource(R.drawable.ic_default_avatar),
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .size(160.dp)
+                .clip(CircleShape)
+                .clickable { onClick() }
+        )
+        Box(
+            modifier = Modifier
+                .offset(x = (-8).dp, y = (-8).dp)
+                .size(50.dp)
+                .background(MaterialTheme.colorScheme.primary, CircleShape),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Filled.CameraAlt,
+                contentDescription = "Change photo",
+                tint = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier.size(30.dp)
+            )
+        }
+    }
 }
 
 @Preview(showBackground = true)

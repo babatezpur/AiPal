@@ -1,5 +1,6 @@
 package com.saptarshi.aipal.ui.profile
 
+import android.R.attr.end
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,11 +16,16 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,13 +38,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.saptarshi.aipal.R
+import com.saptarshi.aipal.ui.theme.AiPalTheme
 
 
 @Composable
 fun ProfileScreen(
-    profileViewModel : ProfileViewModel
+    profileViewModel : ProfileViewModel = hiltViewModel()
 ) {
 
     val name by profileViewModel.name
@@ -78,12 +86,19 @@ fun ProfileViewModelContent(
             },
         )
 
-        ProfilePicture(imgPath)
+        ProfilePicture(imgPath, onClick = {
+            // Handle profile picture change
+            handleChangeDp()
+        })
         ProfileInfo(name, email ) { newName ->
             onNameChange(newName)
         }
 
     }
+}
+
+fun handleChangeDp() {
+
 }
 
 fun onNameChange(newName: String) {
@@ -92,6 +107,9 @@ fun onNameChange(newName: String) {
 
 @Composable
 fun ProfileInfo(name: String, email: String, onNameChange: (newName : String) -> Unit) {
+
+    var isEditing = false
+    
 
     Column(
         modifier = Modifier
@@ -107,22 +125,42 @@ fun ProfileInfo(name: String, email: String, onNameChange: (newName : String) ->
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(end = 30.dp, bottom = 20.dp),
+                .padding( bottom = 20.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = name,
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Bold
-            )
-            Icon(
-                imageVector = Icons.Filled.Edit,
-                contentDescription = "Change name",
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.clickable {
-                    onNameChange(name)
+            if(!isEditing) {
+                Text(
+                    text = name,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold
+                )
+                Icon(
+                    imageVector = Icons.Filled.Edit,
+                    contentDescription = "Change name",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.clickable {
+                        onNameChange(name)
+                    }.padding(end = 30.dp)
+                )
+            }
+            else {
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { onNameChange(it) },
+                    singleLine = true,
+                    modifier = Modifier.weight(1f).padding(top=5.dp)
+                )
+                Button(
+                    onClick = {
+                        isEditing = false
+                        onNameChange(name)
+                              },
+                    modifier = Modifier.padding(start = 10.dp),
+                ) {
+                    Text("Save")
                 }
-            )
+            }
         }
         Text(
             text = "Email",
@@ -156,8 +194,10 @@ fun ProfilePicture(imgPath: String, onClick: () -> Unit = {}) {
             modifier = Modifier
                 .offset(x = (-8).dp, y = (-8).dp)
                 .size(50.dp)
-                .background(MaterialTheme.colorScheme.primary, CircleShape),
-            contentAlignment = Alignment.Center
+                .background(MaterialTheme.colorScheme.primary, CircleShape)
+                .clickable() { onClick() },
+            contentAlignment = Alignment.Center,
+
         ) {
             Icon(
                 imageVector = Icons.Filled.CameraAlt,
@@ -172,10 +212,12 @@ fun ProfilePicture(imgPath: String, onClick: () -> Unit = {}) {
 @Preview(showBackground = true)
 @Composable
 fun ProfileScreenPreview() {
-    ProfileViewModelContent(
-        name = "Saptarshi",
-        email = "william.harrison@example-pet-store.com",
-        imgPath = ""
-    )
+    AiPalTheme {
+        ProfileViewModelContent(
+            name = "Saptarshi",
+            email = "william.harrison@example-pet-store.com",
+            imgPath = ""
+        )
+    }
 }
 

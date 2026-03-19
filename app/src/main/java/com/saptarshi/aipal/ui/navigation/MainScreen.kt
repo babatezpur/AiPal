@@ -31,6 +31,7 @@ import com.saptarshi.aipal.ui.chat.ChatListScreen
 import com.saptarshi.aipal.ui.chat.ChatScreen
 import com.saptarshi.aipal.ui.home.HomeScreen
 import com.saptarshi.aipal.ui.home.SearchScreen
+import com.saptarshi.aipal.ui.profile.ProfileScreen
 import com.saptarshi.aipal.ui.theme.AiPalTheme
 
 
@@ -127,7 +128,7 @@ fun MainScreen() {
 
             // ---- Profile Tab ----
             composable(BottomNavTab.PROFILE.route) {
-                PlaceholderScreen("Profile")
+                ProfileScreen()
             }
 
             // Favourites screen (launched from Profile)

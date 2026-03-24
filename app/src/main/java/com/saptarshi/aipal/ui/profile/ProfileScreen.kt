@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -100,6 +101,9 @@ fun ProfileViewModelContent(
     onLogout: () -> Unit = {}
 ) {
 
+    var showLogoutDialog by remember { mutableStateOf(false) }
+
+
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -119,10 +123,26 @@ fun ProfileViewModelContent(
         ProfilePicture(imgPath, onClick = onPhotoClick)
         ProfileInfo(name, email, onNameChange = onNameChange)
 
-        Button(
-            onClick = onLogout,
-        ) {
+        // Button which shows alert dialog
+        Button(onClick = { showLogoutDialog = true }) {
             Text("Logout")
+        }
+
+        if (showLogoutDialog) {
+            AlertDialog(
+                onDismissRequest = { showLogoutDialog = false },
+                title = { Text("Logout") },
+                text = { Text("Are you sure you want to logout?") } ,
+                confirmButton = {
+                    TextButton(onClick = {
+                        showLogoutDialog = false
+                        onLogout()
+                    }) { Text("Yes") }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showLogoutDialog = false }) { Text("Cancel") }
+                }
+            )
         }
     }
 }

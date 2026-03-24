@@ -31,6 +31,7 @@ import com.saptarshi.aipal.ui.chat.ChatListScreen
 import com.saptarshi.aipal.ui.chat.ChatScreen
 import com.saptarshi.aipal.ui.home.HomeScreen
 import com.saptarshi.aipal.ui.home.SearchScreen
+import com.saptarshi.aipal.ui.profile.ProfileScreen
 import com.saptarshi.aipal.ui.theme.AiPalTheme
 
 
@@ -46,7 +47,7 @@ enum class BottomNavTab(
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MainScreen() {
+fun MainScreen(onLogout: () -> Unit = {}) {
 
     val navController = rememberNavController()
 
@@ -127,7 +128,9 @@ fun MainScreen() {
 
             // ---- Profile Tab ----
             composable(BottomNavTab.PROFILE.route) {
-                PlaceholderScreen("Profile")
+                ProfileScreen(
+                    onLogoutNav = onLogout
+                )
             }
 
             // Favourites screen (launched from Profile)

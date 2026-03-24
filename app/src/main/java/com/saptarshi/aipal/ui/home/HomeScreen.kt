@@ -78,14 +78,6 @@ fun HomeScreenContent(
             title = {
                 Text("Home")
             },
-            actions = {
-                IconButton(onClick = { /* do something */ }) {
-                    Icon(
-                        imageVector = Icons.Filled.Menu,
-                        contentDescription = "Localized description"
-                    )
-                }
-            },
         )
 
         Box(modifier = Modifier.weight(1f)) {

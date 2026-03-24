@@ -98,7 +98,7 @@ fun AuthScreenContent(
 
     Log.d("MainScreen", "SignupMode is : $isSignupMode")
 
-    val headerText = if (isSignupMode) "Hello!\nPlease create your account" else "Welcome back! \nPlease login to continue"
+    val headerText = if (isSignupMode) "Hello!\nPlease sign up first" else "Welcome back! \nPlease login to continue"
 
 
 

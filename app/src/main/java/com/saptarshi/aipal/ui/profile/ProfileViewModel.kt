@@ -6,6 +6,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.saptarshi.aipal.data.local.datastore.TokenManager
 import com.saptarshi.aipal.data.repository.ProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -14,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val profileRepository: ProfileRepository
+    private val profileRepository: ProfileRepository,
+    private val tokenManager: TokenManager
 ) : ViewModel() {
 
     private val _name = mutableStateOf<String>("")
@@ -70,6 +72,16 @@ class ProfileViewModel @Inject constructor(
             val path = copyImageToInternalStorage(context, uri)
             profileRepository.updatePhoto(path)
             _imgPath.value = path
+        }
+    }
+
+    fun logout() {
+
+        // Clear token
+        viewModelScope.launch {
+            tokenManager.clearToken()
+
+            profileRepository.clearProfile()
         }
     }
 

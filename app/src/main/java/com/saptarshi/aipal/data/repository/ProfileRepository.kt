@@ -27,4 +27,9 @@ class ProfileRepository @Inject constructor(
             userProfileDao.insertUserProfile(existing.copy(name = name))
         }
     }
+
+    suspend fun clearProfile() {
+        userProfileDao.deleteUserProfile()
+    }
+
 }

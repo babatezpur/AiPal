@@ -49,7 +49,13 @@ fun AppNavGraph() {
         }
 
         composable("main") {
-            MainScreen()
+            MainScreen(
+                onLogout = {
+                    navController.navigate("auth") {
+                        popUpTo("main") { inclusive = true }
+                    }
+                }
+            )
         }
     }
 }

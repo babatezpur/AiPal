@@ -56,7 +56,8 @@ import com.saptarshi.aipal.ui.theme.AiPalTheme
 
 @Composable
 fun ProfileScreen(
-    profileViewModel : ProfileViewModel = hiltViewModel()
+    profileViewModel : ProfileViewModel = hiltViewModel(),
+    onLogoutNav: () -> Unit
 ) {
 
     val context = LocalContext.current
@@ -78,7 +79,11 @@ fun ProfileScreen(
         email = email,
         imgPath = imgPath,
         onNameChange = { newName -> profileViewModel.updateName(newName) },
-        onPhotoClick = { photoPickerLauncher.launch("image/*") }
+        onPhotoClick = { photoPickerLauncher.launch("image/*") },
+        onLogout = {
+            profileViewModel.logout()
+            onLogoutNav()
+        }
     )
 
 }
@@ -91,7 +96,8 @@ fun ProfileViewModelContent(
     email: String,
     imgPath: String,
     onNameChange: (String) -> Unit = {},
-    onPhotoClick: () -> Unit = {}
+    onPhotoClick: () -> Unit = {},
+    onLogout: () -> Unit = {}
 ) {
 
     Column(
@@ -112,6 +118,12 @@ fun ProfileViewModelContent(
 
         ProfilePicture(imgPath, onClick = onPhotoClick)
         ProfileInfo(name, email, onNameChange = onNameChange)
+
+        Button(
+            onClick = onLogout,
+        ) {
+            Text("Logout")
+        }
     }
 }
 

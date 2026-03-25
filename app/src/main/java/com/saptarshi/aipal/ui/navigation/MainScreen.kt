@@ -135,7 +135,7 @@ fun MainScreen(onLogout: () -> Unit = {}) {
 
             // Favourites screen (launched from Profile)
             composable("favourites") {
-                PlaceholderScreen("Favourites")
+                Favo
             }
         }
 

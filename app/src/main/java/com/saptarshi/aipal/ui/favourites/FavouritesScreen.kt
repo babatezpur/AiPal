@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -40,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.saptarshi.aipal.domain.model.SavedItem
 import com.saptarshi.aipal.ui.theme.AiPalTheme
 import kotlin.math.absoluteValue
 
@@ -90,16 +92,52 @@ fun FavouriteScreenContent() {
         }
 
         if (isCarouselView) {
-            Carousel()
+            Carousel(
+                emptyList()
+            )
         } else {
-            // TODO: LazyColumn list view
+            DataListView(
+                data = emptyList()
+            )
+        }
+    }
+}
+
+@Composable
+fun DataListView(
+    data: List<SavedItem>
+) {
+
+
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(vertical = 16.dp),
+    ) {
+        items(data.size) { index ->
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(Color.LightGray)
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Saved Item #${data[index].topic}",
+                    fontSize = 18.sp,
+                    color = Color.Black
+                )
+            }
         }
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Carousel() {
+fun Carousel(
+    data: List<SavedItem>
+) {
     val pagerState = rememberPagerState(pageCount = { 10 })
 
     HorizontalPager(

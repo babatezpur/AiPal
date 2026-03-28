@@ -130,6 +130,7 @@ fun MainScreen(onLogout: () -> Unit = {}) {
             // ---- Profile Tab ----
             composable(BottomNavTab.PROFILE.route) {
                 ProfileScreen(
+                    navController= navController,
                     onLogoutNav = onLogout
                 )
             }

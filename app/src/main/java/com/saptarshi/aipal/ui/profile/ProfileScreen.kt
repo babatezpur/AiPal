@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
@@ -62,6 +63,7 @@ import com.saptarshi.aipal.ui.theme.AiPalTheme
 @Composable
 fun ProfileScreen(
     profileViewModel : ProfileViewModel = hiltViewModel(),
+    navController: NavController,
     onLogoutNav: () -> Unit
 ) {
 
@@ -85,6 +87,7 @@ fun ProfileScreen(
         imgPath = imgPath,
         onNameChange = { newName -> profileViewModel.updateName(newName) },
         onPhotoClick = { photoPickerLauncher.launch("image/*") },
+        onFavouritesClick = { navController.navigate("favourites") },
         onLogout = {
             profileViewModel.logout()
             onLogoutNav()
@@ -102,6 +105,7 @@ fun ProfileViewModelContent(
     imgPath: String,
     onNameChange: (String) -> Unit = {},
     onPhotoClick: () -> Unit = {},
+    onFavouritesClick: () -> Unit = {},
     onLogout: () -> Unit = {}
 ) {
 
@@ -134,7 +138,7 @@ fun ProfileViewModelContent(
                 .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.small)
                 .padding(vertical = 20.dp, horizontal = 20.dp)
                 .clickable(true) {
-//                    openFavorites()
+                    onFavouritesClick()
                 }
         )
         {   

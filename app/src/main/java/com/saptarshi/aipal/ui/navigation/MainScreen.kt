@@ -29,6 +29,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.saptarshi.aipal.ui.chat.ChatListScreen
 import com.saptarshi.aipal.ui.chat.ChatScreen
+import com.saptarshi.aipal.ui.favourites.FavouritesScreen
 import com.saptarshi.aipal.ui.home.HomeScreen
 import com.saptarshi.aipal.ui.home.SearchScreen
 import com.saptarshi.aipal.ui.profile.ProfileScreen
@@ -135,7 +136,7 @@ fun MainScreen(onLogout: () -> Unit = {}) {
 
             // Favourites screen (launched from Profile)
             composable("favourites") {
-                Favo
+                FavouritesScreen()
             }
         }
 

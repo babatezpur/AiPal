@@ -27,6 +27,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,13 +51,16 @@ fun FavouritesScreen(
     viewModel : FavouritesViewModel = hiltViewModel()
 ) {
 
- FavouriteScreenContent()
+    val favourites by viewModel.favourites.collectAsState()
+    FavouriteScreenContent(favourites)
 
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FavouriteScreenContent() {
+fun FavouriteScreenContent(
+    favourites: List<SavedItem>
+) {
 
     var isCarouselView by remember { mutableStateOf(true) }
 
@@ -93,11 +97,11 @@ fun FavouriteScreenContent() {
 
         if (isCarouselView) {
             Carousel(
-                emptyList()
+                favourites
             )
         } else {
             DataListView(
-                data = emptyList()
+                favourites
             )
         }
     }
@@ -124,7 +128,7 @@ fun DataListView(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "Saved Item #${data[index].topic}",
+                    text = "Saved Item #${data[index].content}",
                     fontSize = 18.sp,
                     color = Color.Black
                 )
@@ -138,7 +142,7 @@ fun DataListView(
 fun Carousel(
     data: List<SavedItem>
 ) {
-    val pagerState = rememberPagerState(pageCount = { 10 })
+    val pagerState = rememberPagerState(pageCount = { data.size })
 
     HorizontalPager(
         state = pagerState,
@@ -169,7 +173,7 @@ fun Carousel(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = page.toString(),
+                text = data[page].content,
                 color = Color.White,
                 fontSize = 32.sp
             )
@@ -181,6 +185,134 @@ fun Carousel(
 @Composable
 fun FavouriteScreenPreview() {
     AiPalTheme {
-        FavouriteScreenContent()
+        FavouriteScreenContent(
+            getSavedItems()
+        )
     }
+}
+
+fun getSavedItems(): List<SavedItem> {
+    val items = mutableListOf<SavedItem>(
+        SavedItem(
+            id = 1,
+            category = "fact",
+            content = "The human brain uses about 20% of the body's total energy, despite making up only 2% of body weight.",
+            author = null,
+            topic = "human brain",
+            savedAt = System.currentTimeMillis() - 86400000 // 1 day ago
+        ),
+        SavedItem(
+            id = 2,
+            category = "quote",
+            content = "The only way to do great work is to love what you do.",
+            author = "Steve Jobs",
+            topic = "work",
+            savedAt = System.currentTimeMillis() - 172800000 // 2 days ago
+        ),
+        SavedItem(
+            id = 3,
+            category = "fact",
+            content = "Octopuses have three hearts and blue blood.",
+            author = null,
+            topic = "octopus",
+            savedAt = System.currentTimeMillis() - 259200000 // 3 days ago
+        ),
+        SavedItem(
+            id = 4,
+            category = "quote",
+            content = "In the middle of difficulty lies opportunity.",
+            author = "Albert Einstein",
+            topic = "opportunity",
+            savedAt = System.currentTimeMillis() - 345600000 // 4 days ago
+        ),
+        SavedItem(
+            id = 5,
+            category = "fact",
+            content = "A single bolt of lightning contains enough energy to toast 100,000 slices of bread.",
+            author = null,
+            topic = "lightning",
+            savedAt = System.currentTimeMillis() - 432000000 // 5 days ago
+        ),
+        SavedItem(
+            id = 6,
+            category = "quote",
+            content = "The best way to predict the future is to create it.",
+            author = "Peter Drucker",
+            topic = "future",
+            savedAt = System.currentTimeMillis() - 518400000 // 6 days ago
+        ),
+        SavedItem(
+            id = 7,
+            category = "fact",
+            content = "Honey never spoils. Archaeologists have found pots of honey in ancient Egyptian tombs that are over 3,000 years old and still perfectly edible.",
+            author = null,
+            topic = "honey",
+            savedAt = System.currentTimeMillis() - 604800000 // 1 week ago
+        ),
+        SavedItem(
+            id = 8,
+            category = "quote",
+            content = "Believe you can and you're halfway there.",
+            author = "Theodore Roosevelt",
+            topic = "belief",
+            savedAt = System.currentTimeMillis() - 691200000 // 8 days ago
+        ),
+        SavedItem(
+            id = 9,
+            category = "fact",
+            content = "A group of flamingos is called a 'flamboyance'.",
+            author = null,
+            topic = "flamingo",
+            savedAt = System.currentTimeMillis() - 777600000 // 9 days ago
+        ),
+        SavedItem(
+            id = 10,
+            category = "quote",
+            content = "The journey of a thousand miles begins with a single step.",
+            author = "Lao Tzu",
+            topic = "journey",
+            savedAt = System.currentTimeMillis() - 864000000 // 10 days ago
+        ),
+        SavedItem(
+            id = 11,
+            category = "fact",
+            content = "Bananas are berries, but strawberries aren't.",
+            author = null,
+            topic = "fruit",
+            savedAt = System.currentTimeMillis() - 950400000 // 11 days ago
+        ),
+        SavedItem(
+            id = 12,
+            category = "quote",
+            content = "Innovation distinguishes between a leader and a follower.",
+            author = "Steve Jobs",
+            topic = "innovation",
+            savedAt = System.currentTimeMillis() - 1036800000 // 12 days ago
+        ),
+        SavedItem(
+            id = 13,
+            category = "fact",
+            content = "The shortest war in history lasted only 38-45 minutes.",
+            author = null,
+            topic = "war",
+            savedAt = System.currentTimeMillis() - 1123200000 // 13 days ago
+        ),
+        SavedItem(
+            id = 14,
+            category = "quote",
+            content = "The only limit to our realization of tomorrow will be our doubts of today.",
+            author = "Franklin D. Roosevelt",
+            topic = "doubt",
+            savedAt = System.currentTimeMillis() - 1209600000 // 14 days ago
+        ),
+        SavedItem(
+            id = 15,
+            category = "fact",
+            content = "A shrimp's heart is in its head.",
+            author = null,
+            topic = "shrimp",
+            savedAt = System.currentTimeMillis() - 1296000000 // 15 days ago
+        )
+    )
+    return items
 }

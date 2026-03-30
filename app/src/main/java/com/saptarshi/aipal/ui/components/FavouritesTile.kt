@@ -1,5 +1,7 @@
 package com.saptarshi.aipal.ui.components
 
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -32,6 +34,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.Clipboard
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
@@ -47,12 +52,19 @@ fun FavouritesTile(
     onUnsaveClick: () -> Unit = {}
 ) {
 
-    var isSaved by rememberSaveable { mutableStateOf(true) }
+    val clipboardManager = LocalClipboardManager.current
+    val context = LocalContext.current
 
     val icon = if (item.category == FeatureCategory.FACT)
         Icons.Filled.Lightbulb
     else
         Icons.Filled.FormatQuote
+
+    val contentToCopy = if (item.category == FeatureCategory.FACT) {
+        item.content
+    } else {
+        "${item.content} — ${item.author ?: "Unknown"}"
+    }
 
     Column(
         modifier = Modifier
@@ -83,7 +95,9 @@ fun FavouritesTile(
                 modifier = Modifier
                     .size(28.dp)
                     .clickable(true) {
-
+                        clipboardManager.setText(AnnotatedString(contentToCopy))
+                        val label = if (item.category == FeatureCategory.FACT) "Fact" else "Quote"
+                        Toast.makeText(context, "$label copied to Clipboard", Toast.LENGTH_SHORT).show()
                     },
                 imageVector = Icons.Filled.ContentCopy,
                 contentDescription = "Copy Icon",
@@ -108,9 +122,9 @@ fun FavouritesTile(
             IconButton(onClick = onUnsaveClick) {
                 Icon(
                     modifier = Modifier.size(32.dp),
-                    imageVector = if (isSaved) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                    contentDescription = if (isSaved) "Saved" else "Save",
-                    tint = if (isSaved) MaterialTheme.colorScheme.primary else Color.White
+                    imageVector = Icons.Filled.Favorite,
+                    contentDescription =  "Saved",
+                    tint =  MaterialTheme.colorScheme.primary
                 )
             }
         }

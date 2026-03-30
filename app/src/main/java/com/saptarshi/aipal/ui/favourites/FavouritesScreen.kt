@@ -27,9 +27,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import android.widget.Toast
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -53,16 +56,29 @@ import kotlin.math.absoluteValue
 fun FavouritesScreen(
     viewModel : FavouritesViewModel = hiltViewModel()
 ) {
-
+    val context = LocalContext.current
     val favourites by viewModel.favourites.collectAsState()
-    FavouriteScreenContent(favourites)
+
+    LaunchedEffect(Unit) {
+        viewModel.errorEvent.collect { message ->
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    FavouriteScreenContent(
+        favourites,
+        { item ->
+            viewModel.removeFromFavourites(item)
+        }
+    )
 
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavouriteScreenContent(
-    favourites: List<SavedItem>
+    favourites: List<SavedItem>,
+    onUnsaveClick: (SavedItem) -> Unit = {}
 ) {
 
     var isCarouselView by remember { mutableStateOf(true) }
@@ -100,7 +116,8 @@ fun FavouriteScreenContent(
 
         if (isCarouselView) {
             Carousel(
-                favourites
+                favourites,
+                onUnsaveClick
             )
         } else {
             DataListView(
@@ -112,7 +129,8 @@ fun FavouriteScreenContent(
 
 @Composable
 fun DataListView(
-    data: List<SavedItem>
+    data: List<SavedItem>,
+    onUnsaveClick: (SavedItem) -> Unit = {}
 ) {
 
 
@@ -143,7 +161,8 @@ fun DataListView(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Carousel(
-    data: List<SavedItem>
+    data: List<SavedItem>,
+    onUnsaveClick: (SavedItem) -> Unit = {}
 ) {
     val pagerState = rememberPagerState(pageCount = { data.size })
 
@@ -168,7 +187,10 @@ fun Carousel(
         FavouritesTile(
             item = data[page],
             scale = scale,
-            pageOffset
+            pageOffset,
+            onUnsaveClick = {
+                onUnsaveClick(data[page])
+            }
         )
     }
 }

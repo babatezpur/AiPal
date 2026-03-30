@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -43,6 +44,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.saptarshi.aipal.domain.model.SavedItem
+import com.saptarshi.aipal.domain.model.FeatureCategory
+import com.saptarshi.aipal.ui.components.FavouritesTile
 import com.saptarshi.aipal.ui.theme.AiPalTheme
 import kotlin.math.absoluteValue
 
@@ -145,8 +148,10 @@ fun Carousel(
     val pagerState = rememberPagerState(pageCount = { data.size })
 
     HorizontalPager(
+        modifier = Modifier
+            .fillMaxHeight(),
         state = pagerState,
-        contentPadding = PaddingValues(horizontal = 84.dp), // shows side items
+        contentPadding = PaddingValues(horizontal = 64.dp), // shows side items
         pageSpacing = 4.dp
     ) { page ->
 
@@ -160,24 +165,11 @@ fun Carousel(
             fraction = 1f - pageOffset.coerceIn(0f, 1f)
         )
 
-        Box(
-            modifier = Modifier
-                .graphicsLayer {
-                    scaleX = scale
-                    scaleY = scale
-                    alpha = lerp(0.5f, 1f, 1f - pageOffset)
-                }
-                .aspectRatio(1f)
-                .clip(RoundedCornerShape(16.dp))
-                .background(Color.Blue),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = data[page].content,
-                color = Color.White,
-                fontSize = 32.sp
-            )
-        }
+        FavouritesTile(
+            item = data[page],
+            scale = scale,
+            pageOffset
+        )
     }
 }
 
@@ -195,7 +187,7 @@ fun getSavedItems(): List<SavedItem> {
     val items = mutableListOf<SavedItem>(
         SavedItem(
             id = 1,
-            category = "fact",
+            category = FeatureCategory.FACT,
             content = "The human brain uses about 20% of the body's total energy, despite making up only 2% of body weight.",
             author = null,
             topic = "human brain",
@@ -203,7 +195,7 @@ fun getSavedItems(): List<SavedItem> {
         ),
         SavedItem(
             id = 2,
-            category = "quote",
+            category = FeatureCategory.QUOTE,
             content = "The only way to do great work is to love what you do.",
             author = "Steve Jobs",
             topic = "work",
@@ -211,7 +203,7 @@ fun getSavedItems(): List<SavedItem> {
         ),
         SavedItem(
             id = 3,
-            category = "fact",
+            category = FeatureCategory.FACT,
             content = "Octopuses have three hearts and blue blood.",
             author = null,
             topic = "octopus",
@@ -219,7 +211,7 @@ fun getSavedItems(): List<SavedItem> {
         ),
         SavedItem(
             id = 4,
-            category = "quote",
+            category = FeatureCategory.QUOTE,
             content = "In the middle of difficulty lies opportunity.",
             author = "Albert Einstein",
             topic = "opportunity",
@@ -227,7 +219,7 @@ fun getSavedItems(): List<SavedItem> {
         ),
         SavedItem(
             id = 5,
-            category = "fact",
+            category = FeatureCategory.FACT,
             content = "A single bolt of lightning contains enough energy to toast 100,000 slices of bread.",
             author = null,
             topic = "lightning",
@@ -235,7 +227,7 @@ fun getSavedItems(): List<SavedItem> {
         ),
         SavedItem(
             id = 6,
-            category = "quote",
+            category = FeatureCategory.QUOTE,
             content = "The best way to predict the future is to create it.",
             author = "Peter Drucker",
             topic = "future",
@@ -243,7 +235,7 @@ fun getSavedItems(): List<SavedItem> {
         ),
         SavedItem(
             id = 7,
-            category = "fact",
+            category = FeatureCategory.FACT,
             content = "Honey never spoils. Archaeologists have found pots of honey in ancient Egyptian tombs that are over 3,000 years old and still perfectly edible.",
             author = null,
             topic = "honey",
@@ -251,7 +243,7 @@ fun getSavedItems(): List<SavedItem> {
         ),
         SavedItem(
             id = 8,
-            category = "quote",
+            category = FeatureCategory.QUOTE,
             content = "Believe you can and you're halfway there.",
             author = "Theodore Roosevelt",
             topic = "belief",
@@ -259,7 +251,7 @@ fun getSavedItems(): List<SavedItem> {
         ),
         SavedItem(
             id = 9,
-            category = "fact",
+            category = FeatureCategory.FACT,
             content = "A group of flamingos is called a 'flamboyance'.",
             author = null,
             topic = "flamingo",
@@ -267,7 +259,7 @@ fun getSavedItems(): List<SavedItem> {
         ),
         SavedItem(
             id = 10,
-            category = "quote",
+            category = FeatureCategory.QUOTE,
             content = "The journey of a thousand miles begins with a single step.",
             author = "Lao Tzu",
             topic = "journey",
@@ -275,7 +267,7 @@ fun getSavedItems(): List<SavedItem> {
         ),
         SavedItem(
             id = 11,
-            category = "fact",
+            category = FeatureCategory.FACT,
             content = "Bananas are berries, but strawberries aren't.",
             author = null,
             topic = "fruit",
@@ -283,7 +275,7 @@ fun getSavedItems(): List<SavedItem> {
         ),
         SavedItem(
             id = 12,
-            category = "quote",
+            category = FeatureCategory.QUOTE,
             content = "Innovation distinguishes between a leader and a follower.",
             author = "Steve Jobs",
             topic = "innovation",
@@ -291,7 +283,7 @@ fun getSavedItems(): List<SavedItem> {
         ),
         SavedItem(
             id = 13,
-            category = "fact",
+            category = FeatureCategory.FACT,
             content = "The shortest war in history lasted only 38-45 minutes.",
             author = null,
             topic = "war",
@@ -299,7 +291,7 @@ fun getSavedItems(): List<SavedItem> {
         ),
         SavedItem(
             id = 14,
-            category = "quote",
+            category = FeatureCategory.QUOTE,
             content = "The only limit to our realization of tomorrow will be our doubts of today.",
             author = "Franklin D. Roosevelt",
             topic = "doubt",
@@ -307,7 +299,7 @@ fun getSavedItems(): List<SavedItem> {
         ),
         SavedItem(
             id = 15,
-            category = "fact",
+            category = FeatureCategory.FACT,
             content = "A shrimp's heart is in its head.",
             author = null,
             topic = "shrimp",

@@ -80,7 +80,7 @@ fun FavouritesTile(
             }
             .aspectRatio(0.75f)
             .clip(RoundedCornerShape(16.dp))
-            .background(Color.Blue)
+            .background(MaterialTheme.colorScheme.primaryContainer)
             .padding(horizontal = 15.dp, vertical = 20.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
@@ -93,7 +93,7 @@ fun FavouritesTile(
                     .size(28.dp),
                 imageVector = icon,
                 contentDescription = "Favorite Icon",
-                tint = Color.White
+                tint = MaterialTheme.colorScheme.onPrimaryContainer
             )
 
             Icon(
@@ -106,7 +106,7 @@ fun FavouritesTile(
                     },
                 imageVector = Icons.Filled.ContentCopy,
                 contentDescription = "Copy Icon",
-                tint = Color.White
+                tint = MaterialTheme.colorScheme.onPrimaryContainer
             )
         }
 
@@ -115,7 +115,7 @@ fun FavouritesTile(
                 .weight(1f)
                 .clickable { showFullContent = true },
             text = item.content,
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
             fontSize = 24.sp,
             lineHeight = 28.sp,
             maxLines = 5,

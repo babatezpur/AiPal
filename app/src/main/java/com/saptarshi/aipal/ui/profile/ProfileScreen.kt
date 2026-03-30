@@ -136,10 +136,10 @@ fun ProfileViewModelContent(
                 .fillMaxWidth()
                 .border(0.2.dp, MaterialTheme.colorScheme.onSurfaceVariant)
                 .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.small)
-                .padding(vertical = 20.dp, horizontal = 20.dp)
                 .clickable(true) {
                     onFavouritesClick()
                 }
+                .padding(vertical = 20.dp, horizontal = 20.dp)
         )
         {   
             Row(

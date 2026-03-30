@@ -37,6 +37,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -66,7 +67,8 @@ import kotlin.math.absoluteValue
 
 @Composable
 fun FavouritesScreen(
-    viewModel : FavouritesViewModel = hiltViewModel()
+    viewModel : FavouritesViewModel = hiltViewModel(),
+    onBackClick: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val favourites by viewModel.favourites.collectAsState()
@@ -79,9 +81,10 @@ fun FavouritesScreen(
 
     FavouriteScreenContent(
         favourites,
-        { item ->
+        onUnsaveClick = { item ->
             viewModel.removeFromFavourites(item)
-        }
+        },
+        onBackClick = onBackClick
     )
 
 }
@@ -90,7 +93,8 @@ fun FavouritesScreen(
 @Composable
 fun FavouriteScreenContent(
     favourites: List<SavedItem>,
-    onUnsaveClick: (SavedItem) -> Unit = {}
+    onUnsaveClick: (SavedItem) -> Unit = {},
+    onBackClick: () -> Unit = {}
 ) {
 
     var isCarouselView by remember { mutableStateOf(false) }
@@ -103,7 +107,15 @@ fun FavouriteScreenContent(
                 containerColor = MaterialTheme.colorScheme.primary,
                 titleContentColor = MaterialTheme.colorScheme.onPrimary
             ),
-            title = { Text("Favourites") }
+            title = { Text("Favourites") },
+            navigationIcon = {
+                IconButton(onClick = { onBackClick() }) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = "Back"
+                    )
+                }
+            },
         )
 
         Row(

@@ -139,19 +139,23 @@ fun FavouritesTile(
             )
         }
 
-        Row(
+        Column(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Save/favourite button
             IconButton(onClick = onUnsaveClick) {
                 Icon(
                     modifier = Modifier.size(32.dp),
                     imageVector = Icons.Filled.Favorite,
-                    contentDescription =  "Saved",
-                    tint =  MaterialTheme.colorScheme.primary
+                    contentDescription = "Saved",
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
+            Text(
+                text = "Tap to unsave",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.6f)
+            )
         }
     }
 }

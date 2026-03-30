@@ -19,15 +19,24 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.ui.res.painterResource
 import com.saptarshi.aipal.R
+import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FormatQuote
+import androidx.compose.material.icons.filled.Lightbulb
 import androidx.compose.material.icons.filled.ViewList
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import android.widget.Toast
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -43,6 +52,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -81,7 +93,7 @@ fun FavouriteScreenContent(
     onUnsaveClick: (SavedItem) -> Unit = {}
 ) {
 
-    var isCarouselView by remember { mutableStateOf(true) }
+    var isCarouselView by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -121,7 +133,8 @@ fun FavouriteScreenContent(
             )
         } else {
             DataListView(
-                favourites
+                favourites,
+                onUnsaveClick
             )
         }
     }
@@ -132,26 +145,105 @@ fun DataListView(
     data: List<SavedItem>,
     onUnsaveClick: (SavedItem) -> Unit = {}
 ) {
-
+    val clipboardManager = LocalClipboardManager.current
+    val context = LocalContext.current
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(vertical = 16.dp),
+        contentPadding = PaddingValues(vertical = 8.dp),
     ) {
         items(data.size) { index ->
-            Box(
+            val item = data[index]
+            val icon = if (item.category == FeatureCategory.FACT)
+                Icons.Filled.Lightbulb else Icons.Filled.FormatQuote
+            var showFullContent by remember { mutableStateOf(false) }
+
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(Color.LightGray)
-                    .padding(16.dp),
-                contentAlignment = Alignment.Center
+                    .padding(horizontal = 16.dp, vertical = 6.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .padding(12.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "Saved Item #${data[index].content}",
-                    fontSize = 18.sp,
-                    color = Color.Black
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(24.dp)
+                )
+
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 12.dp)
+                        .clickable { showFullContent = true },
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text(
+                        text = item.content,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        maxLines = 3,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    if (item.category == FeatureCategory.QUOTE && item.author != null) {
+                        Text(
+                            text = "— ${item.author}",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Text(
+                        text = item.topic,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+
+                Icon(
+                    imageVector = Icons.Filled.ContentCopy,
+                    contentDescription = "Copy",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier
+                        .size(20.dp)
+                        .clickable {
+                            val contentToCopy = if (item.category == FeatureCategory.FACT) {
+                                item.content
+                            } else {
+                                "${item.content} — ${item.author ?: "Unknown"}"
+                            }
+                            clipboardManager.setText(AnnotatedString(contentToCopy))
+                            val label = if (item.category == FeatureCategory.FACT) "Fact" else "Quote"
+                            Toast.makeText(context, "$label copied to Clipboard", Toast.LENGTH_SHORT).show()
+                        }
+                )
+
+                IconButton(onClick = { onUnsaveClick(item) }) {
+                    Icon(
+                        imageVector = Icons.Filled.Favorite,
+                        contentDescription = "Remove",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+            }
+
+            if (showFullContent) {
+                AlertDialog(
+                    onDismissRequest = { showFullContent = false },
+                    title = {
+                        Text(
+                            item.topic.capitalize()
+                        )
+                    },
+                    text = { Text(item.content) },
+                    confirmButton = {
+                        TextButton(onClick = { showFullContent = false }) {
+                            Text("Close")
+                        }
+                    }
                 )
             }
         }

@@ -6,11 +6,11 @@ A native Android app that brings AI-powered facts, quotes, and Q&A conversations
 ## Screenshots
 
 <p float="left">
-  <img src="screenshots/home.png" width="180" />
-  <img src="screenshots/search.png" width="180" />
-  <img src="screenshots/chat.png" width="180" />
-  <img src="screenshots/profile.png" width="180" />
-  <img src="screenshots/favourites.png" width="180" />
+  <img src="screenshots/home.jpeg" width="180" />
+  <img src="screenshots/search.jpeg" width="180" />
+  <img src="screenshots/chat.jpeg" width="180" />
+  <img src="screenshots/profile.jpeg" width="180" />
+  <img src="screenshots/favourites.jpeg" width="180" />
 </p>
 
 ## Features

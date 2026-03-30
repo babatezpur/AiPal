@@ -4,6 +4,7 @@ import com.saptarshi.aipal.data.local.db.dao.SavedItemDao
 import com.saptarshi.aipal.data.local.db.entity.SavedItemEntity
 import com.saptarshi.aipal.data.remote.api.FavouritesApi
 import com.saptarshi.aipal.data.remote.dto.SaveFavouriteRequest
+import com.saptarshi.aipal.domain.model.FeatureCategory
 import com.saptarshi.aipal.domain.model.SavedItem
 import com.saptarshi.aipal.utils.Resource
 import kotlinx.coroutines.flow.Flow
@@ -39,7 +40,7 @@ class FavouritesRepository @Inject constructor(
                 }
                 savedItemDao.deleteAllSavedItems()
                 savedItemDao.insertSavedItems(entities)
-                Resource.Success(items.map { SavedItem(it.id, it.category, it.content, it.author, it.topic, System.currentTimeMillis()) })
+                Resource.Success(items.map { SavedItem(it.id, FeatureCategory.fromString(it.category), it.content, it.author, it.topic, System.currentTimeMillis()) })
             } else {
                 Resource.Error("Failed to fetch favourites")
             }
@@ -63,7 +64,7 @@ class FavouritesRepository @Inject constructor(
                 savedItemDao.insertSavedItem(
                     SavedItemEntity(item.id, item.category, item.content, item.author, item.topic, System.currentTimeMillis())
                 )
-                Resource.Success(SavedItem(item.id, item.category, item.content, item.author, item.topic, System.currentTimeMillis()))
+                Resource.Success(SavedItem(item.id, FeatureCategory.fromString( item.category), item.content, item.author, item.topic, System.currentTimeMillis()))
             } else {
                 Resource.Error("Failed to save favourite")
             }
@@ -87,5 +88,5 @@ class FavouritesRepository @Inject constructor(
     }
 
     private fun SavedItemEntity.toDomainModel() =
-        SavedItem(id, category, content, author, topic, savedAt)
+        SavedItem(id, FeatureCategory.fromString(category), content, author, topic, savedAt)
 }

@@ -20,6 +20,7 @@ datastorePreferences = "1.1.2"
 coil = "2.7.0"
 coreKtxVersion = "1.17.0"
 foundationLayout = "1.10.3"
+foundationLayoutVersion = "1.10.5"
 
 [libraries]
 # Core
@@ -70,6 +71,7 @@ androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "j
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtxVersion" }
 androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout", version.ref = "foundationLayout" }
+androidx-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout", version.ref = "foundationLayoutVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

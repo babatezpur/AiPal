@@ -4,11 +4,13 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
@@ -18,6 +20,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.outlined.ArrowForwardIos
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -39,6 +42,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -47,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
@@ -58,6 +63,7 @@ import com.saptarshi.aipal.ui.theme.AiPalTheme
 @Composable
 fun ProfileScreen(
     profileViewModel : ProfileViewModel = hiltViewModel(),
+    navController: NavController,
     onLogoutNav: () -> Unit
 ) {
 
@@ -81,6 +87,7 @@ fun ProfileScreen(
         imgPath = imgPath,
         onNameChange = { newName -> profileViewModel.updateName(newName) },
         onPhotoClick = { photoPickerLauncher.launch("image/*") },
+        onFavouritesClick = { navController.navigate("favourites") },
         onLogout = {
             profileViewModel.logout()
             onLogoutNav()
@@ -98,6 +105,7 @@ fun ProfileViewModelContent(
     imgPath: String,
     onNameChange: (String) -> Unit = {},
     onPhotoClick: () -> Unit = {},
+    onFavouritesClick: () -> Unit = {},
     onLogout: () -> Unit = {}
 ) {
 
@@ -123,8 +131,47 @@ fun ProfileViewModelContent(
         ProfilePicture(imgPath, onClick = onPhotoClick)
         ProfileInfo(name, email, onNameChange = onNameChange)
 
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(0.2.dp, MaterialTheme.colorScheme.onSurfaceVariant)
+                .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.small)
+                .clickable(true) {
+                    onFavouritesClick()
+                }
+                .padding(vertical = 20.dp, horizontal = 20.dp)
+        )
+        {   
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Favorites",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+
+                Icon(
+                    imageVector = Icons.Outlined.ArrowForwardIos,
+                    contentDescription = "Change name",
+                    tint = Color.Gray,
+                    modifier = Modifier
+                        .padding(end = 10.dp)
+                )
+            }
+        }
+        // Spacer to push the logout button to the bottom
+        Spacer(modifier = Modifier.weight(1f))
+
         // Button which shows alert dialog
-        Button(onClick = { showLogoutDialog = true }) {
+        Button(
+            modifier = Modifier
+                .padding(horizontal = 20.dp, vertical = 40.dp),
+            onClick = { showLogoutDialog = true }
+        ) {
             Text("Logout")
         }
 

@@ -40,6 +40,7 @@ import androidx.navigation.NavController
 @Composable
 fun RecentActivityTile(
     factOrQuote: RecentActivity,
+    maxLines : Int = 1,
     onClick : () -> Unit = {}
 ) {
 
@@ -118,8 +119,23 @@ fun RecentActivityTile(
                 .fillMaxWidth(),
             textAlign = TextAlign.Start,
             style = MaterialTheme.typography.bodyLarge,
-            maxLines = 1,
+            maxLines = maxLines,
             overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
         )
     }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Preview
+@Composable
+fun PreviewRecentsTile() {
+
+    RecentActivityTile(
+        factOrQuote = RecentActivity(
+            id = 1,
+            topic = "The Eiffel Tower can be 15 cm taller during the summer due to thermal expansion.",
+            category = FeatureCategory.FACT,
+            timestamp = System.currentTimeMillis()
+        )
+    )
 }
